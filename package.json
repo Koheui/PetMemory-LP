@@ -1,0 +1,23 @@
+{
+  "name": "petmemory-lp",
+  "version": "1.0.0",
+  "description": "ペット向け想い出サービスのランディングページ",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run build:lp && npm run build:functions",
+    "build:lp": "mkdir -p lp_dist && cp -r src/lp/* lp_dist/",
+    "build:functions": "cd functions && npm run build",
+    "serve": "firebase serve",
+    "deploy": "firebase deploy",
+    "start": "firebase serve --only hosting"
+  },
+  "keywords": ["pet", "memory", "nfc", "landing-page"],
+  "author": "PetMemory Team",
+  "license": "MIT",
+  "devDependencies": {
+    "firebase-tools": "^12.4.0"
+  },
+  "dependencies": {
+    "firebase": "^10.1.0"
+  }
+}

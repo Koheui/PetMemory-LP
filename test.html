@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>想い出リンク LP - テストページ</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-title {
+            color: #2563eb;
+            border-bottom: 2px solid #2563eb;
+            padding-bottom: 10px;
+        }
+        .test-result {
+            background: white;
+            border-left: 4px solid #28a745;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .test-error {
+            background: white;
+            border-left: 4px solid #dc3545;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1d4ed8;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .status.ok { background: #d4edda; color: #155724; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        .status.pending { background: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <h1>🧪 想い出リンク LP - テストダッシュボード</h1>
+    
+    <div class="test-section">
+        <h2 class="test-title">📊 サーバー状態確認</h2>
+        <p>LPサーバー: <span id="lpStatus" class="status pending">確認中...</span></p>
+        <p>Firebase Functions: <span id="functionsStatus" class="status pending">確認中...</span></p>
+        <button onclick="checkServers()">再確認</button>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">📱 レスポンシブデザインテスト</h2>
+        <button onclick="testResponsive('mobile')">📱 モバイル表示</button>
+        <button onclick="testResponsive('tablet')">📟 タブレット表示</button>
+        <button onclick="testResponsive('desktop')">🖥️ デスクトップ表示</button>
+        <div id="responsiveResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">✅ フォームバリデーションテスト</h2>
+        <button onclick="testValidation()">バリデーション実行</button>
+        <div id="validationResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">🔗 API接続テスト</h2>
+        <button onclick="testAPI()">API疎通確認</button>
+        <div id="apiResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2 class="test-title">📨 フォーム送信テスト</h2>
+        <input type="email" id="testEmail" placeholder="テスト用メールアドレス" value="test@example.com" style="padding: 8px; width: 250px; margin-right: 10px;">
+        <button onclick="testFormSubmit()">フォーム送信テスト</button>
+        <div id="formResult"></div>
+    </div>
+
+    <script>
+        // サーバー状態確認
+        async function checkServers() {
+            // LPサーバー確認
+            try {
+                const lpResponse = await fetch('http://localhost:3000/');
+                document.getElementById('lpStatus').textContent = lpResponse.ok ? 'OK (ポート3000)' : 'エラー';
+                document.getElementById('lpStatus').className = 'status ' + (lpResponse.ok ? 'ok' : 'error');
+            } catch (error) {
+                document.getElementById('lpStatus').textContent = 'オフライン';
+                document.getElementById('lpStatus').className = 'status error';
+            }
+
+            // Functions確認
+            try {
+                const functionsResponse = await fetch('http://localhost:5001/petmemory-lp/asia-northeast1/api/health');
+                document.getElementById('functionsStatus').textContent = functionsResponse.ok ? 'OK (ポート5001)' : 'エラー';
+                document.getElementById('functionsStatus').className = 'status ' + (functionsResponse.ok ? 'ok' : 'error');
+            } catch (error) {
+                document.getElementById('functionsStatus').textContent = 'オフライン';
+                document.getElementById('functionsStatus').className = 'status error';
+            }
+        }
+
+        // レスポンシブテスト
+        function testResponsive(device) {
+            const sizes = {
+                mobile: { width: 375, height: 667 },
+                tablet: { width: 768, height: 1024 },
+                desktop: { width: 1200, height: 800 }
+            };
+            
+            const size = sizes[device];
+            const newWindow = window.open('http://localhost:3000/', '_blank', 
+                `width=${size.width},height=${size.height},scrollbars=yes`);
+            
+            document.getElementById('responsiveResult').innerHTML = 
+                `<div class="test-result">✅ ${device}サイズ (${size.width}x${size.height}) で新しいウィンドウを開きました</div>`;
+        }
+
+        // バリデーションテスト
+        function testValidation() {
+            const testCases = [
+                { email: '', expected: 'error', desc: '空のメール' },
+                { email: 'invalid', expected: 'error', desc: '無効なメール形式' },
+                { email: 'test@example.com', expected: 'ok', desc: '有効なメール' },
+                { email: 'very-long-email-address-that-might-be-too-long@very-long-domain-name-example.com', expected: 'error', desc: '長すぎるメール' }
+            ];
+
+            let results = '<h4>バリデーション結果:</h4>';
+            
+            testCases.forEach(test => {
+                const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(test.email) && test.email.length <= 254;
+                const result = isValid ? 'ok' : 'error';
+                const match = result === test.expected;
+                
+                results += `<div class="${match ? 'test-result' : 'test-error'}">
+                    ${match ? '✅' : '❌'} ${test.desc}: ${test.email} → ${result}
+                </div>`;
+            });
+
+            document.getElementById('validationResult').innerHTML = results;
+        }
+
+        // API接続テスト
+        async function testAPI() {
+            const resultDiv = document.getElementById('apiResult');
+            resultDiv.innerHTML = '<div class="test-result">🔄 API接続をテスト中...</div>';
+
+            try {
+                const response = await fetch('http://localhost:5001/petmemory-lp/asia-northeast1/api/health', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="test-result">
+                            ✅ API接続成功<br>
+                            ステータス: ${response.status}<br>
+                            レスポンス: ${JSON.stringify(data, null, 2)}
+                        </div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="test-error">❌ API接続失敗: ${response.status}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="test-error">❌ API接続エラー: ${error.message}</div>`;
+            }
+        }
+
+        // フォーム送信テスト
+        async function testFormSubmit() {
+            const email = document.getElementById('testEmail').value;
+            const resultDiv = document.getElementById('formResult');
+            
+            if (!email) {
+                resultDiv.innerHTML = '<div class="test-error">❌ メールアドレスを入力してください</div>';
+                return;
+            }
+
+            resultDiv.innerHTML = '<div class="test-result">🔄 フォーム送信をテスト中...</div>';
+
+            const testData = {
+                email: email,
+                tenant: 'petmem',
+                lpId: 'direct',
+                productType: 'acrylic',
+                recaptchaToken: 'test-token' // テスト用
+            };
+
+            try {
+                const response = await fetch('http://localhost:5001/petmemory-lp/asia-northeast1/api/api/gate/lp-form', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Origin': 'http://localhost:3000'
+                    },
+                    body: JSON.stringify(testData)
+                });
+
+                const responseData = await response.json();
+
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="test-result">
+                            ✅ フォーム送信成功!<br>
+                            ステータス: ${response.status}<br>
+                            メッセージ: ${responseData.message}<br>
+                            リクエストID: ${responseData.data?.requestId || 'N/A'}
+                        </div>`;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="test-error">
+                            ❌ フォーム送信失敗<br>
+                            ステータス: ${response.status}<br>
+                            エラー: ${responseData.message || responseData.error}
+                        </div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="test-error">❌ 送信エラー: ${error.message}</div>`;
+            }
+        }
+
+        // ページ読み込み時に自動実行
+        window.onload = function() {
+            checkServers();
+            console.log('🧪 想い出リンク LP テストページが読み込まれました');
+            console.log('LP URL: http://localhost:3000/');
+            console.log('Functions URL: http://localhost:5001/');
+        };
+    </script>
+</body>
+</html>

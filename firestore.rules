@@ -1,0 +1,120 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ユーザー認証状態の関数
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // ユーザーのUIDを取得
+    function getUserId() {
+      return request.auth.uid;
+    }
+    
+    // カスタムクレームを取得
+    function getCustomClaims() {
+      return request.auth.token;
+    }
+    
+    // スーパーアドミンかどうか
+    function isSuperAdmin() {
+      return isAuthenticated() && 
+             'role' in getCustomClaims() && 
+             getCustomClaims().role == 'superAdmin';
+    }
+    
+    // テナントアドミンかどうか
+    function isTenantAdmin(tenant) {
+      return isAuthenticated() && 
+             'role' in getCustomClaims() && 
+             getCustomClaims().role == 'tenantAdmin' &&
+             'adminTenant' in getCustomClaims() &&
+             getCustomClaims().adminTenant == tenant;
+    }
+    
+    // リソースの所有者かどうか
+    function isOwner(ownerId) {
+      return isAuthenticated() && getUserId() == ownerId;
+    }
+
+    // ===== ユーザー情報 =====
+    match /users/{userId} {
+      allow read, write: if isOwner(userId) || isSuperAdmin();
+    }
+
+    // ===== Claim Requests =====
+    // クライアントからの書き込みは禁止（Functions のみ）
+    match /claimRequests/{requestId} {
+      allow read: if isSuperAdmin() || 
+                     (isAuthenticated() && 
+                      request.auth.token.email == resource.data.email);
+      allow write: if false; // Functions のみが書き込み可能
+    }
+
+    // ===== Memories =====
+    match /memories/{memoryId} {
+      allow read, write: if isOwner(resource.data.ownerUid) || 
+                           isSuperAdmin() || 
+                           isTenantAdmin(resource.data.tenant);
+      allow create: if isAuthenticated() && 
+                       getUserId() == request.resource.data.ownerUid;
+    }
+
+    // ===== Assets =====
+    match /assets/{assetId} {
+      allow read, write: if isOwner(resource.data.ownerUid) || 
+                           isSuperAdmin() || 
+                           isTenantAdmin(resource.data.tenant);
+      allow create: if isAuthenticated() && 
+                       getUserId() == request.resource.data.ownerUid;
+    }
+
+    // ===== Public Pages =====
+    // 公開ページは読み取り専用（Functions が更新）
+    match /publicPages/{pageId} {
+      allow read: if true; // 誰でも読み取り可能
+      allow write: if false; // Functions のみが書き込み可能
+      
+      // ブロックサブコレクション
+      match /blocks/{blockId} {
+        allow read: if true;
+        allow write: if false;
+      }
+    }
+
+    // ===== Orders =====
+    // 注文情報はクライアントからの書き込み禁止
+    match /orders/{orderId} {
+      allow read: if isOwner(resource.data.ownerUid) || 
+                     isSuperAdmin() || 
+                     isTenantAdmin(resource.data.tenant);
+      allow write: if false; // Functions のみが書き込み可能
+    }
+
+    // ===== Audit Logs =====
+    match /auditLogs/{date}/items/{itemId} {
+      allow read: if isSuperAdmin() || 
+                     isTenantAdmin(resource.data.tenant);
+      allow write: if false; // Functions のみが書き込み可能
+    }
+
+    // ===== Rate Limits =====
+    match /rateLimits/{limitId} {
+      allow read: if isSuperAdmin();
+      allow write: if false; // Functions のみが書き込み可能
+    }
+
+    // ===== System Collections =====
+    match /system/{docId} {
+      allow read: if isSuperAdmin();
+      allow write: if isSuperAdmin();
+    }
+
+    // ===== Default Deny =====
+    // 上記以外のコレクションは全てアクセス拒否
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
