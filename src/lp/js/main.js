@@ -429,6 +429,35 @@ function handleSmoothScroll(event) {
 }
 
 // ================================
+// スクロールアニメーション
+// ================================
+
+/**
+ * Intersection Observer でスクロールアニメーション
+ */
+function setupScrollAnimations() {
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, observerOptions);
+
+  // アニメーション対象要素を監視
+  const animatedElements = document.querySelectorAll('.service-card, .flow-step, .price-card');
+  animatedElements.forEach(el => {
+    el.classList.add('fade-in-on-scroll');
+    observer.observe(el);
+  });
+}
+
+// ================================
 // 初期化
 // ================================
 
@@ -486,6 +515,9 @@ function initialize() {
   
   // イベントリスナー設定
   setupEventListeners();
+  
+  // スクロールアニメーション設定
+  setupScrollAnimations();
   
   // reCAPTCHA読み込み確認
   if (typeof grecaptcha === 'undefined') {

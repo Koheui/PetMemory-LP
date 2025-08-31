@@ -25,6 +25,9 @@
     <script src="https://www.google.com/recaptcha/api.js?render=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></script>
 </head>
 <body>
+    <!-- Skip to content link for accessibility -->
+    <a href="#main-content" class="skip-link">メインコンテンツにスキップ</a>
+    
     <!-- Navigation -->
     <nav class="nav">
         <div class="nav-container">
@@ -41,7 +44,7 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero" id="hero">
+    <section class="hero" id="hero" id="main-content">
         <div class="hero-background"></div>
         <div class="hero-content">
             <div class="hero-text">
@@ -188,10 +191,11 @@
                     <input type="hidden" name="lpId" value="direct">
                     <input type="hidden" name="productType" value="acrylic">
                     
-                    <button type="submit" class="btn btn-primary btn-large" id="submitBtn">
-                        <span class="btn-text">申し込みを送信</span>
-                        <span class="btn-spinner" id="spinner" style="display: none;">送信中...</span>
-                    </button>
+                        <button type="submit" class="btn btn-primary btn-large" id="submitBtn" aria-describedby="submitHelp">
+        <span class="btn-text">申し込みを送信</span>
+        <span class="btn-spinner" id="spinner" style="display: none;" aria-hidden="true">送信中...</span>
+    </button>
+    <div id="submitHelp" class="sr-only">フォーム送信ボタン。メールアドレスを入力後、このボタンを押してください。</div>
                     
                     <div class="form-success" id="successMessage" style="display: none;">
                         <h3>送信完了</h3>
