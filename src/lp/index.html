@@ -197,13 +197,14 @@
     </button>
     <div id="submitHelp" class="sr-only">フォーム送信ボタン。メールアドレスを入力後、このボタンを押してください。</div>
                     
-                    <div class="form-success" id="successMessage" style="display: none;">
-                        <h3>送信完了</h3>
-                        <p>メールをお送りしました。受信ボックスをご確認いただき、メール内のリンクから想い出ページの作成を開始してください。</p>
-                    </div>
-                    
                     <div class="form-error" id="generalError" style="display: none;"></div>
                 </form>
+                
+                <!-- 成功メッセージ（フォームの外に配置） -->
+                <div class="form-success" id="successMessage" style="display: none;">
+                    <h3>送信完了</h3>
+                    <p>メールをお送りしました。受信ボックスをご確認いただき、メール内のリンクから想い出ページの作成を開始してください。</p>
+                </div>
                 
                 <div class="order-notes">
                     <h4>ご注意事項</h4>
@@ -248,6 +249,8 @@
     </footer>
 
     <!-- Scripts -->
+    <!-- reCAPTCHA v3 (v1.1仕様: 本番キー使用) -->
+    <script src="https://www.google.com/recaptcha/api.js?render=66LehwrYrAAAAAMqLNsY-L2HV2pdduHNnPCvGCV3S"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

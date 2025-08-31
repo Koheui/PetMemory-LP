@@ -5,6 +5,15 @@
 
 console.log('🚀 簡易版JavaScript読み込み開始');
 
+// ページ読み込み完了確認
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('📄 DOMContentLoaded イベント発火');
+});
+
+window.addEventListener('load', () => {
+  console.log('🌐 window load イベント発火');
+});
+
 // DOM要素の取得
 const form = document.getElementById('orderForm');
 const emailInput = document.getElementById('email');
@@ -49,9 +58,52 @@ function handleFormSubmit(event) {
   setTimeout(() => {
     console.log('📤 API送信完了（模擬）');
     
-    // 成功メッセージ表示
-    form.style.display = 'none';
-    successMessage.style.display = 'block';
+    // フォームを非表示
+    if (form) {
+      form.style.cssText = 'display: none !important;';
+      console.log('📝 フォームを非表示にしました');
+    }
+    
+    // 成功メッセージを表示
+    if (successMessage) {
+      console.log('🔍 成功メッセージ要素の現在の状態:', {
+        display: successMessage.style.display,
+        opacity: successMessage.style.opacity,
+        visibility: successMessage.style.visibility,
+        position: successMessage.style.position,
+        zIndex: successMessage.style.zIndex
+      });
+      
+      // CSSの優先度を上げて表示
+      successMessage.style.cssText = `
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        position: relative !important;
+        z-index: 1000 !important;
+        background-color: #f0fdf4 !important;
+        border: 2px solid #22c55e !important;
+        border-radius: 12px !important;
+        padding: 24px !important;
+        text-align: center !important;
+        margin-top: 20px !important;
+      `;
+      
+      console.log('✅ 成功メッセージを表示しました');
+      console.log('🔍 成功メッセージ要素の変更後の状態:', {
+        display: successMessage.style.display,
+        opacity: successMessage.style.opacity,
+        visibility: successMessage.style.visibility,
+        position: successMessage.style.position,
+        zIndex: successMessage.style.zIndex
+      });
+      
+      // 成功メッセージを画面の中央にスクロール
+      successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+    } else {
+      console.error('❌ 成功メッセージ要素が見つかりません');
+    }
     
     console.log('✅ フォーム送信成功');
   }, 1000);
