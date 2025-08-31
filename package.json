@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "npm run build:lp && npm run build:functions",
-    "build:lp": "mkdir -p lp_dist && cp -r src/lp/* lp_dist/",
+    "build:lp": "vite build",
     "build:functions": "cd functions && npm run build",
+    "dev": "vite",
     "serve": "firebase serve",
     "deploy": "firebase deploy",
     "start": "firebase serve --only hosting"
@@ -15,7 +16,8 @@
   "author": "PetMemory Team",
   "license": "MIT",
   "devDependencies": {
-    "firebase-tools": "^12.4.0"
+    "firebase-tools": "^12.4.0",
+    "vite": "^5.0.0"
   },
   "dependencies": {
     "firebase": "^10.1.0"
