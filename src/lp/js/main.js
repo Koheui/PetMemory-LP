@@ -38,6 +38,29 @@ const elements = {
   emailError: document.getElementById('emailError')
 };
 
+// デバッグ: 要素の取得状況を確認
+console.log('🔍 DOM要素取得状況:', {
+  form: !!elements.form,
+  emailInput: !!elements.emailInput,
+  submitBtn: !!elements.submitBtn,
+  btnText: !!elements.btnText,
+  spinner: !!elements.spinner,
+  successMessage: !!elements.successMessage,
+  generalError: !!elements.generalError,
+  emailError: !!elements.emailError
+});
+
+// 送信ボタンの直接クリックイベントも追加
+if (elements.submitBtn) {
+  elements.submitBtn.addEventListener('click', (event) => {
+    console.log('🖱️ 送信ボタンがクリックされました');
+    // フォーム送信を手動でトリガー
+    if (elements.form) {
+      elements.form.dispatchEvent(new Event('submit', { bubbles: true }));
+    }
+  });
+}
+
 // ================================
 // ユーティリティ関数
 // ================================
@@ -223,6 +246,9 @@ async function getRecaptchaToken() {
 async function submitToAPI(data) {
   try {
     const fullUrl = `${CONFIG.CMS_API_BASE}${CONFIG.API_ENDPOINT}`;
+    console.log('🔗 API URL:', fullUrl);
+    console.log('📤 送信データ:', data);
+    
     const response = await fetch(fullUrl, {
       method: 'POST',
       headers: {
@@ -339,10 +365,11 @@ async function handleFormSubmit(event) {
     };
     
     // API呼び出し (v1.1仕様)
+    console.log('🌐 API送信開始:', submitData);
     const result = await submitToAPI(submitData);
     
     // 成功時の処理
-    console.log('Form submitted successfully:', result);
+    console.log('✅ フォーム送信成功:', result);
     showSuccess();
     
     // Google Analytics イベント送信（設定されている場合）
@@ -467,9 +494,14 @@ function setupScrollAnimations() {
  * イベントリスナーの設定
  */
 function setupEventListeners() {
+  console.log('🎧 イベントリスナー設定開始');
+  
   // フォーム送信
   if (elements.form) {
+    console.log('✅ フォーム送信イベントリスナー設定');
     elements.form.addEventListener('submit', handleFormSubmit);
+  } else {
+    console.error('❌ フォーム要素が見つかりません');
   }
   
   // メールアドレス入力のリアルタイムバリデーション
