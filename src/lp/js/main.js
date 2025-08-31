@@ -4,14 +4,17 @@
  */
 
 // ================================
-// 設定
+// 設定 (v1.1仕様対応)
 // ================================
 const CONFIG = {
-  // reCAPTCHA設定（実際のサイトキーに置き換えてください）
-  RECAPTCHA_SITE_KEY: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', // テスト用キー
+  // 環境変数から取得（Vite形式）
+  CMS_API_BASE: import.meta.env?.VITE_CMS_API_BASE || 'http://localhost:5001',
+  RECAPTCHA_SITE_KEY: import.meta.env?.VITE_RECAPTCHA_SITE_KEY || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
+  TENANT_ID: import.meta.env?.VITE_TENANT_ID || 'petmem',
+  LP_ID: import.meta.env?.VITE_LP_ID || 'direct',
   
   // API エンドポイント
-  API_ENDPOINT: 'http://localhost:5001/petmemory-lp/asia-northeast1/api/api/gate/lp-form',
+  API_ENDPOINT: '/api-gate-lp-form',
   
   // バリデーション設定
   EMAIL_PATTERN: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
@@ -187,7 +190,7 @@ function validateForm(formData) {
 // ================================
 
 /**
- * reCAPTCHA v3 トークンを取得
+ * reCAPTCHA v3 トークンを取得 (v1.1仕様)
  * @returns {Promise<string>} reCAPTCHAトークン
  */
 async function getRecaptchaToken() {
@@ -198,7 +201,7 @@ async function getRecaptchaToken() {
     
     await grecaptcha.ready();
     const token = await grecaptcha.execute(CONFIG.RECAPTCHA_SITE_KEY, {
-      action: 'lp_form_submit'
+      action: 'lp_form'
     });
     
     return token;
@@ -213,13 +216,14 @@ async function getRecaptchaToken() {
 // ================================
 
 /**
- * LP form API への送信
+ * LP form API への送信 (v1.1仕様)
  * @param {object} data - 送信データ
  * @returns {Promise<object>} APIレスポンス
  */
 async function submitToAPI(data) {
   try {
-    const response = await fetch(CONFIG.API_ENDPOINT, {
+    const fullUrl = `${CONFIG.CMS_API_BASE}${CONFIG.API_ENDPOINT}`;
+    const response = await fetch(fullUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -327,16 +331,14 @@ async function handleFormSubmit(event) {
     // reCAPTCHA トークン取得
     const recaptchaToken = await getRecaptchaToken();
     
-    // API送信データを構築
+    // API送信データを構築 (v1.1仕様)
     const submitData = {
       email: formData.get('email').trim(),
-      tenant: formData.get('tenant'),
-      lpId: formData.get('lpId'),
-      productType: formData.get('productType'),
       recaptchaToken: recaptchaToken
+      // tenant/lpIdは送信するが、サーバ側では必ずOriginから再解決
     };
     
-    // API呼び出し
+    // API呼び出し (v1.1仕様)
     const result = await submitToAPI(submitData);
     
     // 成功時の処理

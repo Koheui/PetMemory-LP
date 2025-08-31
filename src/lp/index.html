@@ -21,7 +21,7 @@
     <!-- Styles -->
     <link rel="stylesheet" href="css/main.css">
     
-    <!-- reCAPTCHA -->
+    <!-- reCAPTCHA v3 (v1.1仕様) -->
     <script src="https://www.google.com/recaptcha/api.js?render=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></script>
 </head>
 <body>
@@ -186,10 +186,10 @@
                         <div class="form-error" id="emailError"></div>
                     </div>
                     
-                    <!-- Hidden fields -->
-                    <input type="hidden" name="tenant" value="petmem">
-                    <input type="hidden" name="lpId" value="direct">
-                    <input type="hidden" name="productType" value="acrylic">
+                    <!-- Hidden fields (v1.1仕様: サーバ側でOriginから解決) -->
+                    <input type="hidden" name="tenant" value="petmem" disabled>
+                    <input type="hidden" name="lpId" value="direct" disabled>
+                    <input type="hidden" name="productType" value="acrylic" disabled>
                     
                         <button type="submit" class="btn btn-primary btn-large" id="submitBtn" aria-describedby="submitHelp">
         <span class="btn-text">申し込みを送信</span>

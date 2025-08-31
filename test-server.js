@@ -50,8 +50,8 @@ const server = http.createServer((req, res) => {
         return;
     }
 
-    // LP フォーム API のモック
-    if (path === '/api/gate/lp-form' || path === '/petmemory-lp/asia-northeast1/api/api/gate/lp-form') {
+    // LP フォーム API のモック (v1.1仕様)
+    if (path === '/api-gate-lp-form' || path === '/api/gate/lp-form' || path === '/petmemory-lp/asia-northeast1/api/api/gate/lp-form') {
         if (method !== 'POST') {
             sendJSON(res, 405, {
                 ok: false,
@@ -71,12 +71,12 @@ const server = http.createServer((req, res) => {
                 const data = JSON.parse(body);
                 console.log('Received form data:', data);
 
-                // 簡単なバリデーション
-                if (!data.email || !data.tenant || !data.lpId || !data.productType) {
+                // 簡単なバリデーション (v1.1仕様: emailのみ必須)
+                if (!data.email) {
                     sendJSON(res, 400, {
                         ok: false,
-                        message: '必須フィールドが不足しています',
-                        error: 'MISSING_FIELDS'
+                        message: 'メールアドレスが必須です',
+                        error: 'MISSING_EMAIL'
                     });
                     return;
                 }
@@ -92,7 +92,7 @@ const server = http.createServer((req, res) => {
                     return;
                 }
 
-                // 成功レスポンス
+                // 成功レスポンス (v1.1仕様)
                 const requestId = 'test_' + Date.now();
                 sendJSON(res, 200, {
                     ok: true,
@@ -100,9 +100,7 @@ const server = http.createServer((req, res) => {
                     data: {
                         requestId: requestId,
                         email: data.email,
-                        tenant: data.tenant,
-                        lpId: data.lpId,
-                        productType: data.productType,
+                        origin: req.headers.origin || 'unknown',
                         testMode: true
                     }
                 });
@@ -137,8 +135,9 @@ server.listen(port, () => {
     console.log(`📡 Server running at http://localhost:${port}/`);
     console.log('📋 Available endpoints:');
     console.log('  - GET  /health');
-    console.log('  - POST /api/gate/lp-form');
-    console.log('  - POST /petmemory-lp/asia-northeast1/api/api/gate/lp-form');
+    console.log('  - POST /api-gate-lp-form (v1.1仕様)');
+    console.log('  - POST /api/gate/lp-form (旧仕様)');
+    console.log('  - POST /petmemory-lp/asia-northeast1/api/api/gate/lp-form (旧仕様)');
     console.log('');
     console.log('🧪 Test URLs:');
     console.log('  - LP: http://localhost:3000/');
