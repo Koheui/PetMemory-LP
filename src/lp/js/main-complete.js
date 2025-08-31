@@ -1,17 +1,28 @@
 /**
- * 想い出リンク LP - メインJavaScript
- * reCAPTCHA v3、フォームバリデーション、Firebase Functions API連携
+ * 想い出リンク LP - 完全版JavaScript
+ * 簡易版をベースに完全版の機能を追加
  */
+
+console.log('🚀 完全版JavaScript読み込み開始');
+
+// ページ読み込み完了確認
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('📄 DOMContentLoaded イベント発火');
+});
+
+window.addEventListener('load', () => {
+  console.log('🌐 window load イベント発火');
+});
 
 // ================================
 // 設定 (v1.1仕様対応)
 // ================================
 const CONFIG = {
-  // 環境変数から取得（Vite形式）
-  CMS_API_BASE: import.meta.env?.VITE_CMS_API_BASE || 'http://localhost:5001',
-  RECAPTCHA_SITE_KEY: import.meta.env?.VITE_RECAPTCHA_SITE_KEY || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
-  TENANT_ID: import.meta.env?.VITE_TENANT_ID || 'petmem',
-  LP_ID: import.meta.env?.VITE_LP_ID || 'direct',
+  // 環境変数から取得（通常のJavaScript形式）
+  CMS_API_BASE: window.VITE_CMS_API_BASE || 'http://localhost:5001',
+  RECAPTCHA_SITE_KEY: window.VITE_RECAPTCHA_SITE_KEY || '66LehwrYrAAAAAMqLNsY-L2HV2pdduHNnPCvGCV3S',
+  TENANT_ID: window.VITE_TENANT_ID || 'petmem',
+  LP_ID: window.VITE_LP_ID || 'direct',
   
   // API エンドポイント
   API_ENDPOINT: '/api-gate-lp-form',
@@ -23,6 +34,8 @@ const CONFIG = {
   DEBOUNCE_DELAY: 300,
   ANIMATION_DURATION: 300
 };
+
+console.log('⚙️ 設定読み込み完了:', CONFIG);
 
 // ================================
 // DOM要素の取得
@@ -38,7 +51,6 @@ const elements = {
   emailError: document.getElementById('emailError')
 };
 
-// デバッグ: 要素の取得状況を確認
 console.log('🔍 DOM要素取得状況:', {
   form: !!elements.form,
   emailInput: !!elements.emailInput,
@@ -49,17 +61,6 @@ console.log('🔍 DOM要素取得状況:', {
   generalError: !!elements.generalError,
   emailError: !!elements.emailError
 });
-
-// 送信ボタンの直接クリックイベントも追加
-if (elements.submitBtn) {
-  elements.submitBtn.addEventListener('click', (event) => {
-    console.log('🖱️ 送信ボタンがクリックされました');
-    // フォーム送信を手動でトリガー
-    if (elements.form) {
-      elements.form.dispatchEvent(new Event('submit', { bubbles: true }));
-    }
-  });
-}
 
 // ================================
 // ユーティリティ関数
@@ -94,57 +95,24 @@ function toggleElement(element, show) {
 }
 
 /**
- * 滑らかなアニメーションで要素を表示/非表示
- * @param {HTMLElement} element - 対象要素
- * @param {boolean} show - 表示するかどうか
- */
-function animateElement(element, show) {
-  if (!element) return;
-  
-  if (show) {
-    element.style.display = 'block';
-    element.style.opacity = '0';
-    element.style.transform = 'translateY(10px)';
-    
-    // フレームをスキップしてアニメーション開始
-    requestAnimationFrame(() => {
-      element.style.transition = `opacity ${CONFIG.ANIMATION_DURATION}ms ease, transform ${CONFIG.ANIMATION_DURATION}ms ease`;
-      element.style.opacity = '1';
-      element.style.transform = 'translateY(0)';
-    });
-  } else {
-    element.style.transition = `opacity ${CONFIG.ANIMATION_DURATION}ms ease, transform ${CONFIG.ANIMATION_DURATION}ms ease`;
-    element.style.opacity = '0';
-    element.style.transform = 'translateY(-10px)';
-    
-    setTimeout(() => {
-      element.style.display = 'none';
-    }, CONFIG.ANIMATION_DURATION);
-  }
-}
-
-/**
  * エラーメッセージを表示
- * @param {HTMLElement} errorElement - エラー表示要素
+ * @param {HTMLElement} element - エラー要素
  * @param {string} message - エラーメッセージ
  */
-function showError(errorElement, message) {
-  if (!errorElement) return;
-  errorElement.textContent = message;
-  errorElement.style.color = '#ef4444';
-  animateElement(errorElement, true);
+function showError(element, message) {
+  if (!element) return;
+  element.textContent = message;
+  element.style.display = 'block';
 }
 
 /**
  * エラーメッセージをクリア
- * @param {HTMLElement} errorElement - エラー表示要素
+ * @param {HTMLElement} element - エラー要素
  */
-function clearError(errorElement) {
-  if (!errorElement) return;
-  animateElement(errorElement, false);
-  setTimeout(() => {
-    errorElement.textContent = '';
-  }, CONFIG.ANIMATION_DURATION);
+function clearError(element) {
+  if (!element) return;
+  element.textContent = '';
+  element.style.display = 'none';
 }
 
 // ================================
@@ -158,54 +126,30 @@ function clearError(errorElement) {
  */
 function validateEmail(email) {
   if (!email || email.trim() === '') {
-    return {
-      isValid: false,
-      message: 'メールアドレスを入力してください。'
-    };
+    return { isValid: false, message: 'メールアドレスを入力してください' };
   }
   
   if (!CONFIG.EMAIL_PATTERN.test(email)) {
-    return {
-      isValid: false,
-      message: '正しいメールアドレスの形式で入力してください。'
-    };
+    return { isValid: false, message: '正しいメールアドレスを入力してください' };
   }
   
-  if (email.length > 254) {
-    return {
-      isValid: false,
-      message: 'メールアドレスが長すぎます。'
-    };
-  }
-  
-  return {
-    isValid: true,
-    message: ''
-  };
+  return { isValid: true };
 }
 
 /**
- * フォーム全体のバリデーション
+ * フォームのバリデーション
  * @param {FormData} formData - フォームデータ
  * @returns {object} バリデーション結果
  */
 function validateForm(formData) {
   const email = formData.get('email');
+  const validation = validateEmail(email);
   
-  // メールアドレスのバリデーション
-  const emailValidation = validateEmail(email);
-  if (!emailValidation.isValid) {
-    return {
-      isValid: false,
-      field: 'email',
-      message: emailValidation.message
-    };
+  if (!validation.isValid) {
+    return { isValid: false, field: 'email', message: validation.message };
   }
   
-  return {
-    isValid: true,
-    message: ''
-  };
+  return { isValid: true };
 }
 
 // ================================
@@ -213,25 +157,56 @@ function validateForm(formData) {
 // ================================
 
 /**
- * reCAPTCHA v3 トークンを取得 (v1.1仕様)
- * @returns {Promise<string>} reCAPTCHAトークン
+ * reCAPTCHA トークン取得
+ * @returns {Promise<string>} reCAPTCHA トークン
  */
 async function getRecaptchaToken() {
+  console.log('🔍 reCAPTCHA トークン取得開始');
+  console.log('🔑 reCAPTCHA サイトキー:', CONFIG.RECAPTCHA_SITE_KEY);
+  console.log('🌐 grecaptcha オブジェクト:', typeof grecaptcha);
+  
   try {
     if (typeof grecaptcha === 'undefined') {
-      console.warn('reCAPTCHA is not loaded, using test token');
+      console.warn('❌ reCAPTCHA is not loaded, using test token');
       return 'test-token';
     }
     
-    await grecaptcha.ready();
-    const token = await grecaptcha.execute(CONFIG.RECAPTCHA_SITE_KEY, {
-      action: 'lp_form'
-    });
+    console.log('✅ grecaptcha オブジェクト確認完了');
+    console.log('🔧 grecaptcha.ready:', typeof grecaptcha.ready);
+    console.log('🔧 grecaptcha.execute:', typeof grecaptcha.execute);
     
-    return token;
+    // grecaptchaが既に準備済みかチェック
+    if (grecaptcha && grecaptcha.execute) {
+      console.log('✅ grecaptcha 既に準備済み、直接実行');
+      
+      console.log('⏳ grecaptcha.execute() 実行中...');
+      const token = await grecaptcha.execute(CONFIG.RECAPTCHA_SITE_KEY, {
+        action: 'lp_form'
+      });
+      
+      console.log('✅ reCAPTCHA トークン取得成功:', token ? token.substring(0, 20) + '...' : 'null');
+      return token;
+    } else {
+      console.log('⏳ grecaptcha.ready() 実行中...');
+      await grecaptcha.ready();
+      console.log('✅ grecaptcha.ready() 完了');
+      
+      console.log('⏳ grecaptcha.execute() 実行中...');
+      const token = await grecaptcha.execute(CONFIG.RECAPTCHA_SITE_KEY, {
+        action: 'lp_form'
+      });
+      
+      console.log('✅ reCAPTCHA トークン取得成功:', token ? token.substring(0, 20) + '...' : 'null');
+      return token;
+    }
   } catch (error) {
-    console.error('reCAPTCHA error:', error);
-    console.warn('Using test token due to reCAPTCHA error');
+    console.error('❌ reCAPTCHA error:', error);
+    console.error('❌ Error details:', {
+      name: error.name,
+      message: error.message,
+      stack: error.stack
+    });
+    console.warn('⚠️ Using test token due to reCAPTCHA error');
     return 'test-token';
   }
 }
@@ -357,6 +332,7 @@ function showSuccess() {
  */
 async function handleFormSubmit(event) {
   event.preventDefault();
+  console.log('📝 フォーム送信開始');
   
   // エラーメッセージをクリア
   clearError(elements.emailError);
@@ -385,8 +361,12 @@ async function handleFormSubmit(event) {
       return;
     }
     
+    console.log('✅ バリデーション成功:', formData.get('email'));
+    
     // reCAPTCHA トークン取得
+    console.log('🔄 reCAPTCHA トークン取得開始');
     const recaptchaToken = await getRecaptchaToken();
+    console.log('🔄 reCAPTCHA トークン取得完了:', recaptchaToken ? recaptchaToken.substring(0, 20) + '...' : 'null');
     
     // API送信データを構築 (v1.1仕様)
     const submitData = {
@@ -459,66 +439,7 @@ const handleEmailInput = debounce((event) => {
 }, CONFIG.DEBOUNCE_DELAY);
 
 // ================================
-// スムーススクロール
-// ================================
-
-/**
- * スムーススクロール処理
- * @param {Event} event - クリックイベント
- */
-function handleSmoothScroll(event) {
-  const href = event.target.getAttribute('href');
-  
-  // 内部リンクの場合のみ処理
-  if (href && href.startsWith('#')) {
-    event.preventDefault();
-    
-    const targetId = href.substring(1);
-    const targetElement = document.getElementById(targetId);
-    
-    if (targetElement) {
-      const navHeight = document.querySelector('.nav')?.offsetHeight || 0;
-      const targetPosition = targetElement.offsetTop - navHeight - 20;
-      
-      window.scrollTo({
-        top: targetPosition,
-        behavior: 'smooth'
-      });
-    }
-  }
-}
-
-// ================================
-// スクロールアニメーション
-// ================================
-
-/**
- * Intersection Observer でスクロールアニメーション
- */
-function setupScrollAnimations() {
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  }, observerOptions);
-
-  // アニメーション対象要素を監視
-  const animatedElements = document.querySelectorAll('.service-card, .flow-step, .price-card');
-  animatedElements.forEach(el => {
-    el.classList.add('fade-in-on-scroll');
-    observer.observe(el);
-  });
-}
-
-// ================================
-// 初期化
+// イベントリスナー設定
 // ================================
 
 /**
@@ -545,30 +466,44 @@ function setupEventListeners() {
     });
   }
   
-  // スムーススクロール
-  document.addEventListener('click', (event) => {
-    if (event.target.matches('a[href^="#"]')) {
-      handleSmoothScroll(event);
-    }
-  });
-  
-  // ナビゲーションの背景透明度調整
-  window.addEventListener('scroll', debounce(() => {
-    const nav = document.querySelector('.nav');
-    if (nav) {
-      const scrolled = window.scrollY > 50;
-      nav.style.backgroundColor = scrolled 
-        ? 'rgba(255, 255, 255, 0.98)' 
-        : 'rgba(255, 255, 255, 0.95)';
-    }
-  }, 10));
+  // 送信ボタンの直接クリックイベントも追加
+  if (elements.submitBtn) {
+    console.log('🎯 送信ボタンクリックテスト設定');
+    
+    // 直接クリックイベントも追加
+    elements.submitBtn.addEventListener('click', (event) => {
+      console.log('🖱️ 送信ボタンがクリックされました');
+      // フォーム送信を手動でトリガー
+      if (elements.form) {
+        elements.form.dispatchEvent(new Event('submit', { bubbles: true }));
+      }
+    });
+    
+    // ボタンの状態確認
+    console.log('🔍 送信ボタンの状態:', {
+      disabled: elements.submitBtn.disabled,
+      type: elements.submitBtn.type,
+      textContent: elements.submitBtn.textContent,
+      style: {
+        pointerEvents: elements.submitBtn.style.pointerEvents,
+        opacity: elements.submitBtn.style.opacity,
+        cursor: elements.submitBtn.style.cursor
+      }
+    });
+  } else {
+    console.error('❌ 送信ボタン要素が見つかりません');
+  }
 }
 
+// ================================
+// 初期化
+// ================================
+
 /**
- * DOMContentLoaded時の初期化
+ * 初期化処理
  */
 function initialize() {
-  console.log('想い出リンク LP - JavaScript initialized');
+  console.log('想い出リンク LP - 完全版JavaScript initialized');
   
   // DOM要素の存在確認
   const requiredElements = ['form', 'emailInput', 'submitBtn'];
@@ -581,59 +516,13 @@ function initialize() {
   // イベントリスナー設定
   setupEventListeners();
   
-  // スクロールアニメーション設定
-  setupScrollAnimations();
-  
   // reCAPTCHA読み込み確認
   if (typeof grecaptcha === 'undefined') {
     console.warn('reCAPTCHA is not loaded. Form submission may fail.');
   }
 }
 
-// ================================
-// エラーハンドリング
-// ================================
+console.log('✅ 完全版JavaScript初期化完了');
 
-/**
- * グローバルエラーハンドラー
- */
-window.addEventListener('error', (event) => {
-  console.error('Global error:', event.error);
-  
-  // 重要なエラーの場合はユーザーに通知
-  if (event.error && event.error.message && 
-      (event.error.message.includes('grecaptcha') || 
-       event.error.message.includes('fetch'))) {
-    showError(elements.generalError, 'システムエラーが発生しました。ページを再読み込みしてお試しください。');
-  }
-});
-
-/**
- * Promise rejection ハンドラー
- */
-window.addEventListener('unhandledrejection', (event) => {
-  console.error('Unhandled promise rejection:', event.reason);
-  event.preventDefault(); // デフォルトのコンソール出力を防ぐ
-});
-
-// ================================
 // 初期化実行
-// ================================
-
-console.log('🚀 元のJavaScriptファイル読み込み開始');
-
-// ページ読み込み完了確認
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('📄 DOMContentLoaded イベント発火');
-});
-
-window.addEventListener('load', () => {
-  console.log('🌐 window load イベント発火');
-});
-
-// DOM読み込み完了時に初期化
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initialize);
-} else {
-  initialize();
-}
+initialize();

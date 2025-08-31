@@ -249,8 +249,16 @@
     </footer>
 
     <!-- Scripts -->
-    <!-- reCAPTCHA v3 (v1.1仕様: 本番キー使用) -->
-    <script src="https://www.google.com/recaptcha/api.js?render=66LehwrYrAAAAAMqLNsY-L2HV2pdduHNnPCvGCV3S"></script>
-    <script src="js/main.js"></script>
+    <!-- reCAPTCHA v3 (本番キー) -->
+    <script src="https://www.google.com/recaptcha/api.js?render=6LehwrYrAAAAAMqLNsY-L2HV2pdduHNnPCvGCV3S"></script>
+    <!-- 環境変数をグローバル変数として設定 -->
+    <script>
+      // 環境変数をグローバル変数として設定
+      window.VITE_CMS_API_BASE = 'http://localhost:5001';
+      window.VITE_RECAPTCHA_SITE_KEY = '6LehwrYrAAAAAMqLNsY-L2HV2pdduHNnPCvGCV3S';
+      window.VITE_TENANT_ID = 'petmem';
+      window.VITE_LP_ID = 'direct';
+    </script>
+    <script src="js/main-complete.js"></script>
 </body>
 </html>
