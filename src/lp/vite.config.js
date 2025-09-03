@@ -4,7 +4,7 @@ import { resolve } from 'path'
 export default defineConfig({
   root: '.',
   build: {
-    outDir: '../lp_dist',
+    outDir: 'dist',
     assetsDir: 'assets',
     emptyOutDir: true,
     rollupOptions: {
