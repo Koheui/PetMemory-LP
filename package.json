@@ -4,7 +4,7 @@
   "description": "ペット向け想い出サービスのランディングページ",
   "main": "index.js",
   "scripts": {
-    "build": "npm run build:all-lps && npm run build:functions",
+    "build": "npm run build:app-hosting",
     "build:all-lps": "npm run build:lp && npm run build:lp-petmem",
     "build:lp": "vite build --config vite.config.js",
     "build:lp-petmem": "vite build --config vite.petmem.config.js",
