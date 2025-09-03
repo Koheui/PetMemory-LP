@@ -1,21 +1,21 @@
-import { defineConfig } from 'vite'
-import { resolve } from 'path'
+import { defineConfig } from "vite"
+import { resolve } from "path"
 
 export default defineConfig({
-  root: '.',
+  root: ".",
   build: {
-    outDir: 'dist',
-    assetsDir: 'assets',
+    outDir: "lp_dist",
+    assetsDir: "assets",
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'index.html')
+        main: resolve(__dirname, "index.html")
       }
     }
   },
   server: {
     port: 3000,
-    host: '0.0.0.0',
+    host: "0.0.0.0",
     open: true
   }
 })
