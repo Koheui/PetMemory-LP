@@ -1,0 +1,30 @@
+{
+  "name": "petmemory-lp",
+  "version": "1.0.0",
+  "description": "ペット向け想い出サービスのランディングページ",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run build:app-hosting",
+    "build:all-lps": "npm run build:lp && npm run build:lp-petmem",
+    "build:lp": "vite build --config vite.config.js",
+    "build:lp-petmem": "vite build --config vite.petmem.config.js",
+    "build:functions": "cd functions && npm run build",
+    "build:app-hosting": "vite build --config vite.config.js",    "dev": "vite",
+    "dev:petmem": "vite --config vite.petmem.config.js",
+    "serve": "firebase serve",
+    "deploy": "firebase deploy",
+    "deploy:lp": "firebase deploy --only hosting:lp-example-com",
+    "deploy:lp-petmem": "firebase deploy --only hosting:lp-petmem-com",
+    "start": "firebase serve --only hosting"
+  },
+  "keywords": ["pet", "memory", "nfc", "landing-page"],
+  "author": "PetMemory Team",
+  "license": "MIT",
+  "devDependencies": {
+    "firebase-tools": "^12.4.0",
+    "vite": "^5.0.0"
+  },
+  "dependencies": {
+    "firebase": "^10.1.0"
+  }
+}
