@@ -91,48 +91,10 @@
           ]
         }
       ]
-    },
-    {
-      "site": "app-example-com",
-      "public": "app_dist",
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ]
-    },
-    {
-      "site": "mem-example-com",
-      "public": "mem_dist",
-      "headers": [
-        {
-          "source": "/p/**",
-          "headers": [
-            {
-              "key": "Cache-Control",
-              "value": "public, max-age=300"
-            }
-          ]
-        },
-        {
-          "source": "/deliver/**",
-          "headers": [
-            {
-              "key": "Cache-Control",
-              "value": "public, max-age=31536000, immutable"
-            }
-          ]
-        }
-      ]
     }
   ],
   "functions": {
     "source": "functions",
     "runtime": "nodejs18"
-  },
-  "firestore": {
-    "rules": "firestore.rules",
-    "indexes": "firestore.indexes.json"
   }
 }

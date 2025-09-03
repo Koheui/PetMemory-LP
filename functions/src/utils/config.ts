@@ -14,6 +14,9 @@ export function getEnvironmentConfig(): EnvironmentConfig {
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     SHEETS_SERVICE_ACCOUNT: process.env.SHEETS_SERVICE_ACCOUNT,
+    // Gmail SMTP設定
+    EMAIL_USER: process.env.EMAIL_USER || "",
+    EMAIL_PASSWORD: process.env.EMAIL_PASSWORD || "",
   };
 
   return config;

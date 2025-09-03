@@ -6,6 +6,7 @@
 import { Request, Response } from "express";
 import { admin } from "../utils/firebase";
 import { verifyRecaptcha } from "../utils/recaptcha";
+import * as nodemailer from 'nodemailer';
 import {
   hashEmail,
   generateRequestId,
@@ -26,6 +27,42 @@ import {
 } from "../utils/config";
 import { LpFormRequest, ClaimRequest } from "../types";
 
+/**
+ * メール送信設定
+ */
+function getEmailTransporter() {
+  const config = getEnvironmentConfig();
+  
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: config.EMAIL_USER,
+      pass: config.EMAIL_PASSWORD
+    }
+  });
+}
+
+/**
+ * メール送信関数
+ */
+async function sendEmail(to: string, subject: string, html: string): Promise<void> {
+  try {
+    const transporter = getEmailTransporter();
+    
+    const mailOptions = {
+      from: `"PetMemory" <${getEnvironmentConfig().EMAIL_USER}>`,
+      to: to,
+      subject: subject,
+      html: html
+    };
+    
+    await transporter.sendMail(mailOptions);
+    console.log(`Email sent successfully to: ${to}`);
+  } catch (error) {
+    console.error('Email sending error:', error);
+    throw new Error('メール送信に失敗しました');
+  }
+}
 /**
  * レート制限チェック
  */
@@ -150,20 +187,35 @@ async function sendEmailLink(
     // continueURL の構築
     const continueUrl = `${config.APP_CLAIM_CONTINUE_URL}?rid=${requestId}&tenant=${tenant}&lpId=${lpId}&k=${claimToken}`;
 
-    // Firebase Auth でメールリンクを送信
-    const actionCodeSettings = {
-      url: continueUrl,
-      handleCodeInApp: true,
-    };
+    // メールテンプレート
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #333;">PetMemory アカウント認証</h2>
+        <p>以下のリンクをクリックしてアカウントを認証してください：</p>
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${continueUrl}" 
+             style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+            アカウントを認証する
+          </a>
+        </div>
+        <p style="color: #666; font-size: 14px;">
+          このリンクは24時間有効です。<br>
+          リンクがクリックできない場合は、以下のURLをコピーしてブラウザに貼り付けてください：<br>
+          <a href="${continueUrl}" style="color: #007bff;">${continueUrl}</a>
+        </p>
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+        <p style="color: #999; font-size: 12px;">
+          このメールは自動送信されています。返信はできません。
+        </p>
+      </div>
+    `;
 
-    const link = await admin.auth().generateSignInWithEmailLink(email, actionCodeSettings);
-    
-    // メール送信（実際の実装では別途メール送信サービスを使用）
-    console.log("Email link generated:", link);
-    console.log("Continue URL:", continueUrl);
-    
-    // ここで実際のメール送信処理を実装
-    // 例: SendGrid, Amazon SES, Firebase Extensions などを使用
+    // メール送信
+    await sendEmail(
+      email,
+      'PetMemory アカウント認証 - メール内のリンクをクリックしてください',
+      html
+    );
 
   } catch (error) {
     console.error("Failed to send email link:", error);

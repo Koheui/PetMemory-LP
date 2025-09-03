@@ -2,7 +2,6 @@
  * reCAPTCHA v3 検証
  */
 
-import fetch from "node-fetch";
 import { RecaptchaResponse } from "../types";
 import { getEnvironmentConfig, RECAPTCHA_MIN_SCORE } from "./config";
 
