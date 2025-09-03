@@ -9,7 +9,7 @@
     "build:lp": "vite build --config vite.config.js",
     "build:lp-petmem": "vite build --config vite.petmem.config.js",
     "build:functions": "cd functions && npm run build",
-    "dev": "vite",
+    "build:app-hosting": "vite build --config vite.config.js",    "dev": "vite",
     "dev:petmem": "vite --config vite.petmem.config.js",
     "serve": "firebase serve",
     "deploy": "firebase deploy",
