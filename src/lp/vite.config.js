@@ -17,5 +17,9 @@ export default defineConfig({
     port: 3000,
     host: "0.0.0.0",
     open: true
+  },
+  // JavaScriptファイルを正しく処理するための設定
+  optimizeDeps: {
+    include: ['js/main.js']
   }
 })

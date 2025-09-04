@@ -90,27 +90,59 @@ function generateTextVersion(htmlContent: string): string {
 }
 
 /**
- * テナント・LPに応じたメール設定を取得
+ * テナント・LP・プロダクトタイプに応じたメール設定を取得（動的対応）
  */
-function getEmailConfig(tenant: string, lpId: string) {
-  const config = getEnvironmentConfig();
-  
-  // 環境変数で指定されたテナント・LPIDの場合のみ有効
-  if (tenant === config.DEFAULT_TENANT && lpId === config.DEFAULT_LP_ID) {
-    return {
-      headerTitle: "エモリンククラウド",
-      headerSubtitle: "想い出を永遠に",
-      mainMessage: "エモリンククラウドへのお申し込みありがとうございます。大切な想い出をで残しましょう。",
-      buttonText: "想い出ページを作成する",
-      footerMessage: "エモリンククラウド - 想い出を永遠に",
-      // メールタイトル
-      claimEmailSubject: "エモリンククラウド - 想い出ページ作成のご案内",
-      confirmationEmailSubject: "エモリンククラウド - お申し込み確認"
+function getEmailConfig(tenant: string, lpId: string, productType: string, emailConfig?: {
+  headerTitle?: string;
+  headerSubtitle?: string;
+  mainMessage?: string;
+  buttonText?: string;
+  footerMessage?: string;
+  claimEmailSubject?: string;
+  confirmationEmailSubject?: string;
+}) {
+  // テナント名を適切なブランド名に変換
+  const getBrandName = (tenant: string): string => {
+    const brandMap: { [key: string]: string } = {
+      'petmem': 'PetMemory',
+      'futurestudio': 'Future Studio',
+      'emolink': 'エモリンククラウド',
+      // 新しいテナントは自動的にテナント名をブランド名として使用
     };
-  }
+    
+    return brandMap[tenant] || tenant.charAt(0).toUpperCase() + tenant.slice(1);
+  };
+
+  // プロダクトタイプに応じたメッセージを生成
+  const getProductMessage = (productType: string): string => {
+   
+    const productMessages: { [key: string]: string } = {
+      'acrylic': 'NFCタグ付きアクリルスタンド',
+      'digital': 'デジタル想い出ページ',
+      'premium': 'プレミアム想い出サービス',
+      'standard': 'スタンダード想い出サービス',
+      // 新しいプロダクトタイプは自動的にプロダクト名を使用
+    };
+    
+    return productMessages[productType] || productType;
+  };
+
+  // 動的にメール設定を生成
+  const brandName = getBrandName(tenant);
+  const productName = getProductMessage(productType);
   
-  // それ以外の場合はエラー
-  throw new Error(`Unsupported tenant/lpId combination: ${tenant}/${lpId}`);
+  const config = {
+    headerTitle: emailConfig?.headerTitle || brandName,
+    headerSubtitle: emailConfig?.headerSubtitle || "想い出を永遠に",
+    mainMessage: emailConfig?.mainMessage || `${brandName}へのお申し込みありがとうございます。${productName}で大切な想い出を残しましょう。`,
+    buttonText: emailConfig?.buttonText || "想い出ページを作成する",
+    footerMessage: emailConfig?.footerMessage || `${brandName} - 想い出を永遠に`,
+    // メールタイトル
+    claimEmailSubject: emailConfig?.claimEmailSubject || `${brandName} - ${productName}のご案内`,
+    confirmationEmailSubject: emailConfig?.confirmationEmailSubject || `${brandName} - お申し込み確認`
+  };
+
+  return config;
 }
 
 /**
@@ -174,6 +206,7 @@ function generateCommonEmailTemplate(
         <div class="footer">
           <p>${footerMessage || `${headerTitle} - 大切な想い出を永遠に`}</p>
           <p>このメールは自動送信されています。返信はできません。</p>
+          <p style="font-size: 10px; color: #9ca3af; margin-top: 8px;">v1.1</p>
         </div>
       </div>
     </body>
@@ -191,7 +224,7 @@ function generateClaimEmailTemplate(
   tenant: string,
   lpId: string
 ): string {
-  const config = getEmailConfig(tenant, lpId);
+  const config = getEmailConfig(tenant, lpId, 'standard'); // 仮のproductTypeを渡す
   
   const additionalInfo = `
     <strong>⚠️ ご注意</strong><br>
@@ -223,7 +256,7 @@ function generateConfirmationEmailTemplate(
   tenant: string,
   lpId: string
 ): string {
-  const config = getEmailConfig(tenant, lpId);
+  const config = getEmailConfig(tenant, lpId, productType);
   
   const additionalInfo = `
     <strong>📋 申し込み内容</strong><br>
@@ -252,7 +285,16 @@ export async function sendClaimEmail(
   email: string,
   requestId: string,
   tenant: string,
-  lpId: string
+  lpId: string,
+  emailConfig?: {
+    headerTitle?: string;
+    headerSubtitle?: string;
+    mainMessage?: string;
+    buttonText?: string;
+    footerMessage?: string;
+    claimEmailSubject?: string;
+    confirmationEmailSubject?: string;
+  }
 ): Promise<void> {
   try {
     const config = getEnvironmentConfig();
@@ -270,8 +312,8 @@ export async function sendClaimEmail(
 
     // Gmail SMTP でメール送信を試行
     if (config.GMAIL_USER && config.GMAIL_APP_PASSWORD) {
-      const emailConfig = getEmailConfig(tenant, lpId);
-      const subject = emailConfig.claimEmailSubject;
+      const emailSettings = getEmailConfig(tenant, lpId, 'standard', emailConfig);
+      const subject = emailSettings.claimEmailSubject;
       const htmlContent = generateClaimEmailTemplate(email, continueUrl, requestId, tenant, lpId);
       
       await sendEmailWithGmail(email, subject, htmlContent);
@@ -302,15 +344,24 @@ export async function sendConfirmationEmail(
   productType: string,
   requestId: string,
   tenant: string,
-  lpId: string
+  lpId: string,
+  emailConfig?: {
+    headerTitle?: string;
+    headerSubtitle?: string;
+    mainMessage?: string;
+    buttonText?: string;
+    footerMessage?: string;
+    claimEmailSubject?: string;
+    confirmationEmailSubject?: string;
+  }
 ): Promise<void> {
   try {
     const config = getEnvironmentConfig();
     
     // Gmail SMTP でメール送信を試行
     if (config.GMAIL_USER && config.GMAIL_APP_PASSWORD) {
-      const emailConfig = getEmailConfig(tenant, lpId);
-      const subject = emailConfig.confirmationEmailSubject;
+      const emailSettings = getEmailConfig(tenant, lpId, productType, emailConfig);
+      const subject = emailSettings.confirmationEmailSubject;
       const htmlContent = generateConfirmationEmailTemplate(email, productType, requestId, tenant, lpId);
       
       await sendEmailWithGmail(email, subject, htmlContent);

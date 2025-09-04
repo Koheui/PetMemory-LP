@@ -10,8 +10,18 @@ const CONFIG = {
   // 環境変数から取得（Vite形式）
   CMS_API_BASE: import.meta.env?.VITE_CMS_API_BASE || 'https://memorylink-cms.cloudfunctions.net',
   RECAPTCHA_SITE_KEY: import.meta.env?.VITE_RECAPTCHA_SITE_KEY || '6LeCp7wrAAAAACXaot0OR0ClPJ-jeM7f17OpfkoX',
-  TENANT_ID: import.meta.env?.VITE_TENANT_ID || 'petmem',
-  LP_ID: import.meta.env?.VITE_LP_ID || 'direct',
+  TENANT_ID: import.meta.env?.VITE_TENANT_ID || 'futurestudio',
+  LP_ID: import.meta.env?.VITE_LP_ID || 'emolink.cloud',
+  PRODUCT_TYPE: import.meta.env?.VITE_PRODUCT_TYPE || 'acrylic',
+  
+  // メール本文用（自由記述）
+  EMAIL_HEADER_TITLE: import.meta.env?.VITE_EMAIL_HEADER_TITLE || 'emolink',
+  EMAIL_HEADER_SUBTITLE: import.meta.env?.VITE_EMAIL_HEADER_SUBTITLE || '想い出を永遠に',
+  EMAIL_MAIN_MESSAGE: import.meta.env?.VITE_EMAIL_MAIN_MESSAGE || 'emolinkへのお申し込みありがとうございます。NFCタグ付きアクリルスタンドで大切な想い出を残しましょう。',
+  EMAIL_BUTTON_TEXT: import.meta.env?.VITE_EMAIL_BUTTON_TEXT || '想い出ページを作成する',
+  EMAIL_FOOTER_MESSAGE: import.meta.env?.VITE_EMAIL_FOOTER_MESSAGE || 'emolink - 想い出を永遠に',
+  EMAIL_CLAIM_SUBJECT: import.meta.env?.VITE_EMAIL_CLAIM_SUBJECT || 'emolink - NFCタグ付きアクリルスタンドのご案内',
+  EMAIL_CONFIRMATION_SUBJECT: import.meta.env?.VITE_EMAIL_CONFIRMATION_SUBJECT || 'emolink - お申し込み確認',
   
   // API エンドポイント（CMS統合）
   API_ENDPOINT: 'https://asia-northeast1-memorylink-cms.cloudfunctions.net/lpForm',
@@ -393,8 +403,16 @@ async function handleFormSubmit(event) {
       email: formData.get('email').trim(),
       tenant: CONFIG.TENANT_ID,
       lpId: CONFIG.LP_ID,
-      productType: 'acrylic',
-      recaptchaToken: recaptchaToken
+      productType: CONFIG.PRODUCT_TYPE,
+      recaptchaToken: recaptchaToken,
+      // メール本文用（自由記述）
+      emailHeaderTitle: CONFIG.EMAIL_HEADER_TITLE,
+      emailHeaderSubtitle: CONFIG.EMAIL_HEADER_SUBTITLE,
+      emailMainMessage: CONFIG.EMAIL_MAIN_MESSAGE,
+      emailButtonText: CONFIG.EMAIL_BUTTON_TEXT,
+      emailFooterMessage: CONFIG.EMAIL_FOOTER_MESSAGE,
+      emailClaimSubject: CONFIG.EMAIL_CLAIM_SUBJECT,
+      emailConfirmationSubject: CONFIG.EMAIL_CONFIRMATION_SUBJECT
     };
     
     // API呼び出し (v1.1仕様)
@@ -564,14 +582,6 @@ function setupEventListeners() {
         : 'rgba(255, 255, 255, 0.95)';
     }
   }, 10));
-}
-
-/**
- * スクロールアニメーションの設定
- */
-function setupScrollAnimations() {
-  // スクロールアニメーション設定（必要に応じて実装）
-  console.log('🎬 スクロールアニメーション設定完了');
 }
 
 /**

@@ -9,6 +9,14 @@ export interface LpFormRequest {
   lpId: string;
   productType: string;
   recaptchaToken: string;
+  // メール本文用（自由記述）
+  emailHeaderTitle?: string;
+  emailHeaderSubtitle?: string;
+  emailMainMessage?: string;
+  emailButtonText?: string;
+  emailFooterMessage?: string;
+  emailClaimSubject?: string;
+  emailConfirmationSubject?: string;
 }
 
 // Claim Request ドキュメント
@@ -49,6 +57,8 @@ export interface EnvironmentConfig {
   // デフォルトテナント設定
   DEFAULT_TENANT: string;
   DEFAULT_LP_ID: string;
+  // テナント設定（JSON形式の文字列）
+  TENANT_CONFIG_JSON: string;
 }
 
 // reCAPTCHA レスポンス

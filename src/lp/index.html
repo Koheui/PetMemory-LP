@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>emolink | 大切な想い出を永遠に</title>
-    <meta name="description" content="ペットとの想い出を美しいアクリルスタンドと専用ページで永遠に残しませんか？NFCタグで簡単アクセス、QRコード同梱で安心。">
-    <meta name="keywords" content="ペット,想い出,メモリアル,NFC,アクリルスタンド,QRコード">
+    <meta name="description" content="大切な想い出を美しいアクリルスタンドと専用ページで永遠に残しませんか？NFCタグで簡単アクセス、QRコード同梱で安心。">
+    <meta name="keywords" content="想い出,メモリアル,NFC,アクリルスタンド,QRコード,emolink">
     
     <!-- Open Graph -->
     <meta property="og:title" content="emolink | 大切な想い出を永遠に">
-    <meta property="og:description" content="ペットとの想い出を美しいアクリルスタンドと専用ページで永遠に残しませんか？">
+    <meta property="og:description" content="大切な想い出を美しいアクリルスタンドと専用ページで永遠に残しませんか？">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://lp.example.com">
     <meta property="og:image" content="https://lp.example.com/assets/og-image.jpg">
@@ -70,7 +70,7 @@
     <!-- Service Section -->
     <section class="service" id="service">
         <div class="container">
-            <h2 class="section-title">emolinkの特徴</h2>
+            <h2 class="section-title">EMOLINKの特徴</h2>
             <div class="service-grid">
                 <div class="service-card">
                     <div class="service-icon">
@@ -187,9 +187,7 @@
                     </div>
                     
                     <!-- Hidden fields (v1.1仕様: サーバ側でOriginから解決) -->
-                    <input type="hidden" name="tenant" value="petmem" disabled>
-                    <input type="hidden" name="lpId" value="direct" disabled>
-                    <input type="hidden" name="productType" value="acrylic" disabled>
+                    <!-- 削除: 環境変数から動的に取得 -->
                     
                     <button type="submit" class="btn btn-primary btn-large" id="submitBtn" aria-describedby="submitHelp">
                         <span class="btn-text">申し込みを送信</span>
@@ -244,132 +242,12 @@
             </div>
             <div class="footer-bottom">
                 <p>&copy; 2024 emolink. All rights reserved.</p>
+                <p style="font-size: 12px; color: #6b7280; margin-top: 8px;">v1.1</p>
             </div>
         </div>
     </footer>
 
     <!-- Scripts -->
-    <!-- 環境変数をグローバル変数として設定 -->
-    <script>
-      // 環境変数をグローバル変数として設定
-      window.VITE_CMS_API_BASE = 'https://asia-northeast1-memorylink-cms.cloudfunctions.net';
-      window.VITE_RECAPTCHA_SITE_KEY = '6LeCp7wrAAAAACXaot0OR0ClPJ-jeM7f17OpfkoX';
-      window.VITE_TENANT_ID = 'petmem';
-      window.VITE_LP_ID = 'direct';
-      
-      // デバッグ用の簡易フォーム処理
-      document.addEventListener('DOMContentLoaded', function() {
-        console.log('🔍 デバッグ: DOMContentLoaded 発火');
-        
-        const form = document.getElementById('orderForm');
-        const submitBtn = document.getElementById('submitBtn');
-        const emailInput = document.getElementById('email');
-        const successMessage = document.getElementById('successMessage');
-        
-        console.log('🔍 要素取得状況:', {
-          form: !!form,
-          submitBtn: !!submitBtn,
-          emailInput: !!emailInput,
-          successMessage: !!successMessage
-        });
-        
-        if (form) {
-          console.log('✅ フォーム要素発見');
-          console.log('📝 フォームのHTML:', form.outerHTML);
-          
-          // フォーム送信イベント
-          form.addEventListener('submit', function(e) {
-            console.log('🎯 フォーム送信イベント発火');
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const email = emailInput.value;
-            console.log('📧 入力されたメールアドレス:', email);
-            
-            if (!email || !email.includes('@')) {
-              alert('有効なメールアドレスを入力してください');
-              return;
-            }
-            
-            // 送信ボタンを無効化
-            submitBtn.disabled = true;
-            submitBtn.querySelector('.btn-text').textContent = '送信中...';
-            
-            // API送信
-            fetch('https://asia-northeast1-memorylink-cms.cloudfunctions.net/lpForm', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                email: email,
-                tenant: 'petmem',
-                lpId: 'direct',
-                productType: 'acrylic',
-                recaptchaToken: 'test'
-              })
-            })
-            .then(response => response.json())
-            .then(data => {
-              console.log('✅ API送信成功:', data);
-              
-              // フォームを非表示
-              form.style.display = 'none';
-              
-              // 成功メッセージを表示
-              if (successMessage) {
-                successMessage.style.display = 'block';
-                successMessage.style.cssText = `
-                  background-color: #f0fdf4;
-                  border: 2px solid #22c55e;
-                  border-radius: 12px;
-                  padding: 24px;
-                  text-align: center;
-                  margin-top: 20px;
-                `;
-              }
-              
-              alert('送信完了！メールをご確認ください。');
-            })
-            .catch(error => {
-              console.error('❌ API送信エラー:', error);
-              alert('送信に失敗しました。しばらく時間をおいて再度お試しください。');
-              
-              // 送信ボタンを有効化
-              submitBtn.disabled = false;
-              submitBtn.querySelector('.btn-text').textContent = '申し込みを送信';
-            });
-          });
-          
-          // フォームのクリックイベントも追加
-          form.addEventListener('click', function(e) {
-            console.log('🖱️ フォームクリックイベント:', e.target);
-          });
-        } else {
-          console.error('❌ フォーム要素が見つかりません');
-        }
-        
-        if (submitBtn) {
-          console.log('✅ 送信ボタン要素発見');
-          console.log('📝 送信ボタンのHTML:', submitBtn.outerHTML);
-          
-          // 送信ボタンのクリックイベント
-          submitBtn.addEventListener('click', function(e) {
-            console.log('🖱️ 送信ボタンクリックイベント発火');
-            e.preventDefault();
-            e.stopPropagation();
-            
-            // フォーム送信を手動でトリガー
-            if (form) {
-              console.log('🚀 フォーム送信を手動でトリガー');
-              form.dispatchEvent(new Event('submit', { bubbles: true }));
-            }
-          });
-        } else {
-          console.error('❌ 送信ボタン要素が見つかりません');
-        }
-      });
-    </script>
-    <script src="js/main.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>

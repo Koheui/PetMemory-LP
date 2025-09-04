@@ -18,38 +18,57 @@ export function getEnvironmentConfig(): EnvironmentConfig {
     GMAIL_USER: process.env.GMAIL_USER || "",
     GMAIL_APP_PASSWORD: process.env.GMAIL_APP_PASSWORD || "",
     // デフォルトテナント設定
-    DEFAULT_TENANT: process.env.DEFAULT_TENANT || "petmem",
-    DEFAULT_LP_ID: process.env.DEFAULT_LP_ID || "direct",
+    DEFAULT_TENANT: process.env.DEFAULT_TENANT || "futurestudio",
+    DEFAULT_LP_ID: process.env.DEFAULT_LP_ID || "emolink.cloud",
+    // テナント設定（JSON形式の文字列）
+    TENANT_CONFIG_JSON: process.env.TENANT_CONFIG_JSON || "{}",
   };
 
   return config;
 }
 
-// テナント設定（ハードコード、将来的にはFirestoreから取得）
-export const TENANT_CONFIG: TenantConfig = {
-  petmem: {
-    allowedLpIds: ["direct", "partner1", "partner2"],
-    maxClaimRequestsPerHour: 10,
-    enabledProductTypes: ["acrylic", "digital", "premium"],
-  },
-  // 他のテナントも追加可能
-};
-
-// 許可されたテナント・lpIdの組み合わせをチェック
-export function isValidTenantLpId(tenant: string, lpId: string): boolean {
-  const tenantConfig = TENANT_CONFIG[tenant];
-  if (!tenantConfig) {
-    return false;
+// 環境変数からテナント設定を取得
+function getTenantConfigFromEnv(): { [key: string]: TenantConfig[string] } {
+  const config = getEnvironmentConfig();
+  
+  try {
+    return JSON.parse(config.TENANT_CONFIG_JSON);
+  } catch (error) {
+    console.warn("Failed to parse TENANT_CONFIG_JSON, using default config");
+    return {};
   }
+}
+
+// 動的テナント設定（環境変数から取得）
+export function getDynamicTenantConfig(tenant: string): TenantConfig[string] {
+  // デフォルト設定（全てのテナントで共通）
+  const defaultConfig: TenantConfig[string] = {
+    allowedLpIds: ["direct", "partner1", "partner2", "emolink.cloud", "futurestudio"],
+    maxClaimRequestsPerHour: 10,
+    enabledProductTypes: ["acrylic", "digital", "premium", "standard"],
+  };
+
+  // 環境変数からテナント設定を取得
+  const envTenantConfig = getTenantConfigFromEnv();
+  const customConfig = envTenantConfig[tenant];
+
+  if (customConfig) {
+    return { ...defaultConfig, ...customConfig };
+  }
+
+  // 新しいテナントの場合はデフォルト設定を返す
+  return defaultConfig;
+}
+
+// 許可されたテナント・lpIdの組み合わせをチェック（動的対応）
+export function isValidTenantLpId(tenant: string, lpId: string): boolean {
+  const tenantConfig = getDynamicTenantConfig(tenant);
   return tenantConfig.allowedLpIds.includes(lpId);
 }
 
-// 許可されたプロダクトタイプをチェック
+// 許可されたプロダクトタイプをチェック（動的対応）
 export function isValidProductType(tenant: string, productType: string): boolean {
-  const tenantConfig = TENANT_CONFIG[tenant];
-  if (!tenantConfig) {
-    return false;
-  }
+  const tenantConfig = getDynamicTenantConfig(tenant);
   return tenantConfig.enabledProductTypes.includes(productType);
 }
 

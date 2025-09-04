@@ -133,11 +133,20 @@ async function sendEmailLink(
   email: string,
   requestId: string,
   tenant: string,
-  lpId: string
+  lpId: string,
+  emailConfig?: {
+    headerTitle?: string;
+    headerSubtitle?: string;
+    mainMessage?: string;
+    buttonText?: string;
+    footerMessage?: string;
+    claimEmailSubject?: string;
+    confirmationEmailSubject?: string;
+  }
 ): Promise<void> {
   try {
     // メール送信
-    await sendClaimEmail(email, requestId, tenant, lpId);
+    await sendClaimEmail(email, requestId, tenant, lpId, emailConfig);
 
   } catch (error) {
     console.error("Failed to send email link:", error);
@@ -157,6 +166,14 @@ export async function handleLpForm(req: Request, res: Response): Promise<void> {
       lpId,
       productType,
       recaptchaToken,
+      // メール本文用（自由記述）
+      emailHeaderTitle,
+      emailHeaderSubtitle,
+      emailMainMessage,
+      emailButtonText,
+      emailFooterMessage,
+      emailClaimSubject,
+      emailConfirmationSubject,
     } = req.body as LpFormRequest;
 
     // 必須フィールドの検証
@@ -171,6 +188,17 @@ export async function handleLpForm(req: Request, res: Response): Promise<void> {
     const sanitizedTenant = sanitizeInput(tenant);
     const sanitizedLpId = sanitizeInput(lpId);
     const sanitizedProductType = sanitizeInput(productType);
+
+    // メール本文用の設定を構築
+    const emailConfig = {
+      headerTitle: emailHeaderTitle,
+      headerSubtitle: emailHeaderSubtitle,
+      mainMessage: emailMainMessage,
+      buttonText: emailButtonText,
+      footerMessage: emailFooterMessage,
+      claimEmailSubject: emailClaimSubject,
+      confirmationEmailSubject: emailConfirmationSubject,
+    };
 
     // メールアドレスのバリデーション
     if (!validateEmail(sanitizedEmail)) {
@@ -263,10 +291,10 @@ export async function handleLpForm(req: Request, res: Response): Promise<void> {
     await db.collection("claimRequests").doc(requestId).set(claimRequestData);
 
     // メールリンク送信
-    await sendEmailLink(sanitizedEmail, requestId, sanitizedTenant, sanitizedLpId);
+    await sendEmailLink(sanitizedEmail, requestId, sanitizedTenant, sanitizedLpId, emailConfig);
 
     // フォーム送信者向け確認メール送信
-    await sendConfirmationEmail(sanitizedEmail, sanitizedProductType, requestId, sanitizedTenant, sanitizedLpId);
+    await sendConfirmationEmail(sanitizedEmail, sanitizedProductType, requestId, sanitizedTenant, sanitizedLpId, emailConfig);
 
     // ステータスを "sent" に更新
     await db.collection("claimRequests").doc(requestId).update({
