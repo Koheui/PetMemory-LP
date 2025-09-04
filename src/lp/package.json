@@ -6,7 +6,7 @@
   "scripts": {
     "build": "vite build --config vite.config.js",
     "dev": "vite",
-    "start": "npm install --omit=dev && npm run build && node server.js"
+    "start": "npm install --omit=dev --no-audit --no-fund && npm run build && node server.js"
   },
   "keywords": ["memory", "nfc", "landing-page"],
   "author": "PetMemory Team",
