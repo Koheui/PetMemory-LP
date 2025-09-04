@@ -44,8 +44,8 @@ export interface EnvironmentConfig {
   STRIPE_WEBHOOK_SECRET?: string;
   SHEETS_SERVICE_ACCOUNT?: string;
   // Gmail SMTP設定
-  EMAIL_USER: string;
-  EMAIL_PASSWORD: string;
+  GMAIL_USER: string;
+  GMAIL_APP_PASSWORD: string;
 }
 
 // reCAPTCHA レスポンス
