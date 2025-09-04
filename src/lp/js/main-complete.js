@@ -371,8 +371,10 @@ async function handleFormSubmit(event) {
     // API送信データを構築 (v1.1仕様)
     const submitData = {
       email: formData.get('email').trim(),
+      tenant: CONFIG.TENANT_ID,
+      lpId: CONFIG.LP_ID,
+      productType: 'acrylic',
       recaptchaToken: recaptchaToken
-      // tenant/lpIdは送信するが、サーバ側では必ずOriginから再解決
     };
     
     // API呼び出し (v1.1仕様)
