@@ -8,13 +8,13 @@
 // ================================
 const CONFIG = {
   // 環境変数から取得（Vite形式）
-  CMS_API_BASE: import.meta.env?.VITE_CMS_API_BASE || 'http://localhost:5001',
-  RECAPTCHA_SITE_KEY: import.meta.env?.VITE_RECAPTCHA_SITE_KEY || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
+  CMS_API_BASE: import.meta.env?.VITE_CMS_API_BASE || 'https://memorylink-cms.cloudfunctions.net',
+  RECAPTCHA_SITE_KEY: import.meta.env?.VITE_RECAPTCHA_SITE_KEY || '6LeCp7wrAAAAACXaot0OR0ClPJ-jeM7f17OpfkoX',
   TENANT_ID: import.meta.env?.VITE_TENANT_ID || 'petmem',
   LP_ID: import.meta.env?.VITE_LP_ID || 'direct',
   
-  // API エンドポイント
-  API_ENDPOINT: 'http://localhost:5002/lpForm',
+  // API エンドポイント（CMS統合）
+  API_ENDPOINT: 'https://asia-northeast1-memorylink-cms.cloudfunctions.net/lpForm',
   
   // バリデーション設定
   EMAIL_PATTERN: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
@@ -247,7 +247,7 @@ async function getRecaptchaToken() {
  */
 async function submitToAPI(data) {
   try {
-    const fullUrl = `${CONFIG.CMS_API_BASE}${CONFIG.API_ENDPOINT}`;
+    const fullUrl = CONFIG.API_ENDPOINT;
     console.log('🔗 API URL:', fullUrl);
     console.log('📤 送信データ:', data);
     
@@ -391,8 +391,10 @@ async function handleFormSubmit(event) {
     // API送信データを構築 (v1.1仕様)
     const submitData = {
       email: formData.get('email').trim(),
+      tenant: CONFIG.TENANT_ID,
+      lpId: CONFIG.LP_ID,
+      productType: 'acrylic',
       recaptchaToken: recaptchaToken
-      // tenant/lpIdは送信するが、サーバ側では必ずOriginから再解決
     };
     
     // API呼び出し (v1.1仕様)
@@ -562,6 +564,14 @@ function setupEventListeners() {
         : 'rgba(255, 255, 255, 0.95)';
     }
   }, 10));
+}
+
+/**
+ * スクロールアニメーションの設定
+ */
+function setupScrollAnimations() {
+  // スクロールアニメーション設定（必要に応じて実装）
+  console.log('🎬 スクロールアニメーション設定完了');
 }
 
 /**

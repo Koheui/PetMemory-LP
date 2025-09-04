@@ -17,6 +17,9 @@ export function getEnvironmentConfig(): EnvironmentConfig {
     // Gmail SMTP設定
     GMAIL_USER: process.env.GMAIL_USER || "",
     GMAIL_APP_PASSWORD: process.env.GMAIL_APP_PASSWORD || "",
+    // デフォルトテナント設定
+    DEFAULT_TENANT: process.env.DEFAULT_TENANT || "petmem",
+    DEFAULT_LP_ID: process.env.DEFAULT_LP_ID || "direct",
   };
 
   return config;

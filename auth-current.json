@@ -1,0 +1,25 @@
+{"users": [
+{
+  "localId": "7TMFzN4yYmTagMJZgNvPHsKL7Xa2",
+  "email": "kohei_oka@futurestudio.co.jp",
+  "emailVerified": true,
+  "passwordHash": "rvHVzfvn51aeQSXpbCS3A8aT47bT9KqpletBTuh7XXAWTt+g/dKkaq+WItptPsDBc+XaDDdEFolGcSPwekFbGA==",
+  "salt": "FQNUU2QfebQ/Bw==",
+  "displayName": "Kohei Oka (Admin)",
+  "lastSignedInAt": "1756483571611",
+  "createdAt": "1756483504928",
+  "disabled": false,
+  "customAttributes": "{\"role\":\"superAdmin\"}",
+  "providerUserInfo": []
+},
+{
+  "localId": "YtXjH6hyUpTfKqCekOMTv7EkUXJ3",
+  "email": "fcb@live.jp",
+  "emailVerified": false,
+  "passwordHash": "8QyeFO3iCYEW95czqs/xncRxl1+FRn7VCEaGziyQcBiHS8bAyUuu3evzRIv84j/XJWENyMlD77jZplpLg7F2oQ==",
+  "salt": "Ia4VH63h2WYLnA==",
+  "lastSignedInAt": "1756626334617",
+  "createdAt": "1755755176770",
+  "disabled": false,
+  "providerUserInfo": []
+}]}

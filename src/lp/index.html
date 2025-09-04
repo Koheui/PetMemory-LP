@@ -21,8 +21,8 @@
     <!-- Styles -->
     <link rel="stylesheet" href="css/main.css">
     
-    <!-- reCAPTCHA v3 (テスト用) -->
-    <script src="https://www.google.com/recaptcha/api.js?render=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></script>
+    <!-- reCAPTCHA v3 -->
+    <script src="https://www.google.com/recaptcha/api.js?render=6LeCp7wrAAAAACXaot0OR0ClPJ-jeM7f17OpfkoX"></script>
 </head>
 <body>
     <!-- Skip to content link for accessibility -->
@@ -172,7 +172,7 @@
         <div class="container">
             <h2 class="section-title">お申し込み</h2>
             <div class="order-form-container">
-                <form class="order-form" id="orderForm">
+                <form class="order-form" id="orderForm" action="javascript:void(0);" onsubmit="return false;">
                     <div class="form-group">
                         <label for="email" class="form-label">メールアドレス</label>
                         <input 
@@ -191,11 +191,11 @@
                     <input type="hidden" name="lpId" value="direct" disabled>
                     <input type="hidden" name="productType" value="acrylic" disabled>
                     
-                        <button type="submit" class="btn btn-primary btn-large" id="submitBtn" aria-describedby="submitHelp">
-        <span class="btn-text">申し込みを送信</span>
-        <span class="btn-spinner" id="spinner" style="display: none;" aria-hidden="true">送信中...</span>
-    </button>
-    <div id="submitHelp" class="sr-only">フォーム送信ボタン。メールアドレスを入力後、このボタンを押してください。</div>
+                    <button type="submit" class="btn btn-primary btn-large" id="submitBtn" aria-describedby="submitHelp">
+                        <span class="btn-text">申し込みを送信</span>
+                        <span class="btn-spinner" id="spinner" style="display: none;" aria-hidden="true">送信中...</span>
+                    </button>
+                    <div id="submitHelp" class="sr-only">フォーム送信ボタン。メールアドレスを入力後、このボタンを押してください。</div>
                     
                     <div class="form-error" id="generalError" style="display: none;"></div>
                 </form>
@@ -249,16 +249,127 @@
     </footer>
 
     <!-- Scripts -->
-    <!-- reCAPTCHA v3 (本番キー) -->
-    <script src="https://www.google.com/recaptcha/api.js?render=6LeCp7wrAAAAACXaot0OR0ClPJ-jeM7f17OpfkoX"></script>
     <!-- 環境変数をグローバル変数として設定 -->
     <script>
       // 環境変数をグローバル変数として設定
-      window.VITE_CMS_API_BASE = 'http://localhost:5001';
+      window.VITE_CMS_API_BASE = 'https://asia-northeast1-memorylink-cms.cloudfunctions.net';
       window.VITE_RECAPTCHA_SITE_KEY = '6LeCp7wrAAAAACXaot0OR0ClPJ-jeM7f17OpfkoX';
       window.VITE_TENANT_ID = 'petmem';
       window.VITE_LP_ID = 'direct';
+      
+      // デバッグ用の簡易フォーム処理
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('🔍 デバッグ: DOMContentLoaded 発火');
+        
+        const form = document.getElementById('orderForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const emailInput = document.getElementById('email');
+        const successMessage = document.getElementById('successMessage');
+        
+        console.log('🔍 要素取得状況:', {
+          form: !!form,
+          submitBtn: !!submitBtn,
+          emailInput: !!emailInput,
+          successMessage: !!successMessage
+        });
+        
+        if (form) {
+          console.log('✅ フォーム要素発見');
+          console.log('📝 フォームのHTML:', form.outerHTML);
+          
+          // フォーム送信イベント
+          form.addEventListener('submit', function(e) {
+            console.log('🎯 フォーム送信イベント発火');
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const email = emailInput.value;
+            console.log('📧 入力されたメールアドレス:', email);
+            
+            if (!email || !email.includes('@')) {
+              alert('有効なメールアドレスを入力してください');
+              return;
+            }
+            
+            // 送信ボタンを無効化
+            submitBtn.disabled = true;
+            submitBtn.querySelector('.btn-text').textContent = '送信中...';
+            
+            // API送信
+            fetch('https://asia-northeast1-memorylink-cms.cloudfunctions.net/lpForm', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                email: email,
+                tenant: 'petmem',
+                lpId: 'direct',
+                productType: 'acrylic',
+                recaptchaToken: 'test'
+              })
+            })
+            .then(response => response.json())
+            .then(data => {
+              console.log('✅ API送信成功:', data);
+              
+              // フォームを非表示
+              form.style.display = 'none';
+              
+              // 成功メッセージを表示
+              if (successMessage) {
+                successMessage.style.display = 'block';
+                successMessage.style.cssText = `
+                  background-color: #f0fdf4;
+                  border: 2px solid #22c55e;
+                  border-radius: 12px;
+                  padding: 24px;
+                  text-align: center;
+                  margin-top: 20px;
+                `;
+              }
+              
+              alert('送信完了！メールをご確認ください。');
+            })
+            .catch(error => {
+              console.error('❌ API送信エラー:', error);
+              alert('送信に失敗しました。しばらく時間をおいて再度お試しください。');
+              
+              // 送信ボタンを有効化
+              submitBtn.disabled = false;
+              submitBtn.querySelector('.btn-text').textContent = '申し込みを送信';
+            });
+          });
+          
+          // フォームのクリックイベントも追加
+          form.addEventListener('click', function(e) {
+            console.log('🖱️ フォームクリックイベント:', e.target);
+          });
+        } else {
+          console.error('❌ フォーム要素が見つかりません');
+        }
+        
+        if (submitBtn) {
+          console.log('✅ 送信ボタン要素発見');
+          console.log('📝 送信ボタンのHTML:', submitBtn.outerHTML);
+          
+          // 送信ボタンのクリックイベント
+          submitBtn.addEventListener('click', function(e) {
+            console.log('🖱️ 送信ボタンクリックイベント発火');
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // フォーム送信を手動でトリガー
+            if (form) {
+              console.log('🚀 フォーム送信を手動でトリガー');
+              form.dispatchEvent(new Event('submit', { bubbles: true }));
+            }
+          });
+        } else {
+          console.error('❌ 送信ボタン要素が見つかりません');
+        }
+      });
     </script>
-    <script src="js/main-complete.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>

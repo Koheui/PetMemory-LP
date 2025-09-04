@@ -6,7 +6,7 @@
 import { Request, Response } from "express";
 import { admin } from "../utils/firebase";
 import { verifyRecaptcha } from "../utils/recaptcha";
-import { sendClaimEmail } from "../utils/email";
+import { sendClaimEmail, sendConfirmationEmail } from "../utils/email";
 import {
   hashEmail,
   generateRequestId,
@@ -264,6 +264,9 @@ export async function handleLpForm(req: Request, res: Response): Promise<void> {
 
     // メールリンク送信
     await sendEmailLink(sanitizedEmail, requestId, sanitizedTenant, sanitizedLpId);
+
+    // フォーム送信者向け確認メール送信
+    await sendConfirmationEmail(sanitizedEmail, sanitizedProductType, requestId, sanitizedTenant, sanitizedLpId);
 
     // ステータスを "sent" に更新
     await db.collection("claimRequests").doc(requestId).update({

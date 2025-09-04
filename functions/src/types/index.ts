@@ -46,6 +46,9 @@ export interface EnvironmentConfig {
   // Gmail SMTP設定
   GMAIL_USER: string;
   GMAIL_APP_PASSWORD: string;
+  // デフォルトテナント設定
+  DEFAULT_TENANT: string;
+  DEFAULT_LP_ID: string;
 }
 
 // reCAPTCHA レスポンス

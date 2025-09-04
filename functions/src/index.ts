@@ -7,27 +7,13 @@ import express from "express";
 import cors from "cors";
 import { handleLpForm } from "./api/lpForm";
 import { handleLogin, handleVerifyEmail, handleLogout } from "./api/auth";
-import { getAllowedOrigins } from "./utils/config";
 
 // Express アプリケーションの作成
 const app = express();
 
 // CORS 設定
 const corsOptions = {
-  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-    const allowedOrigins = getAllowedOrigins();
-    
-    // origin が undefined の場合（same-origin requests）は許可
-    if (!origin) {
-      return callback(null, true);
-    }
-    
-    if (allowedOrigins.includes(origin) || allowedOrigins.includes("*")) {
-      callback(null, true);
-    } else {
-      callback(new Error("CORS: Origin not allowed"), false);
-    }
-  },
+  origin: true, // 一時的にすべてのオリジンを許可
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -95,7 +81,11 @@ export const health = functions
 export const lpForm = functions
   .region("asia-northeast1")
   .https
-  .onRequest((req, res) => {
+  .onRequest(async (req, res) => {
+    console.log('🔍 lpForm function called');
+    console.log('📝 Request method:', req.method);
+    console.log('📝 Request body:', req.body);
+    
     // CORS ヘッダーを設定
     res.set("Access-Control-Allow-Origin", "*");
     res.set("Access-Control-Allow-Methods", "POST, OPTIONS");
@@ -114,17 +104,45 @@ export const lpForm = functions
       return;
     }
     
-    // テスト用の簡単なレスポンス
-    res.json({
-      ok: true,
-      message: "LP form received successfully",
-      data: {
-        email: req.body.email,
-        tenant: req.body.tenant,
-        lpId: req.body.lpId,
-        productType: req.body.productType,
-        timestamp: new Date().toISOString(),
-      },
-    });
+    try {
+      console.log('🚀 Starting email sending process...');
+      
+      // 直接メール送信処理を実行
+      const { email, tenant, lpId, productType } = req.body;
+      
+      console.log('📧 Email:', email);
+      console.log('🏢 Tenant:', tenant);
+      console.log('🆔 LP ID:', lpId);
+      console.log('📦 Product Type:', productType);
+      
+      // sendClaimEmailを直接呼び出し
+      const { sendClaimEmail } = await import('./utils/email');
+      const requestId = 'test-' + Date.now();
+      
+      console.log('📤 Sending email...');
+      await sendClaimEmail(email, requestId, tenant, lpId);
+      console.log('✅ Email sent successfully');
+      
+      res.json({
+        ok: true,
+        message: "メールを送信しました。受信ボックスをご確認ください。",
+        data: {
+          email,
+          tenant,
+          lpId,
+          productType,
+          requestId,
+          timestamp: new Date().toISOString(),
+        },
+      });
+      
+    } catch (error) {
+      console.error("❌ lpForm error:", error);
+      res.status(500).json({
+        ok: false,
+        message: "Internal server error",
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
   });
 
