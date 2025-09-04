@@ -233,11 +233,26 @@ async function getRecaptchaToken() {
       return 'test-token';
     }
     
+    // grecaptchaが既に準備済みかチェック
+    if (grecaptcha && grecaptcha.execute) {
+      console.log('✅ grecaptcha 既に準備済み、直接実行');
+      const token = await grecaptcha.execute(CONFIG.RECAPTCHA_SITE_KEY, {
+        action: 'lp_form'
+      });
+      return token;
+    }
+    
+    // grecaptchaが準備されていない場合はready()を呼び出し
+    console.log('⏳ grecaptcha.ready() 実行中...');
     await grecaptcha.ready();
+    console.log('✅ grecaptcha.ready() 完了');
+    
+    console.log('⏳ grecaptcha.execute() 実行中...');
     const token = await grecaptcha.execute(CONFIG.RECAPTCHA_SITE_KEY, {
       action: 'lp_form'
     });
     
+    console.log('✅ reCAPTCHA トークン取得成功');
     return token;
   } catch (error) {
     console.error('reCAPTCHA error:', error);

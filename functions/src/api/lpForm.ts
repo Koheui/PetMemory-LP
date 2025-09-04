@@ -134,6 +134,7 @@ async function sendEmailLink(
   requestId: string,
   tenant: string,
   lpId: string,
+  productType: string,
   emailConfig?: {
     headerTitle?: string;
     headerSubtitle?: string;
@@ -146,7 +147,7 @@ async function sendEmailLink(
 ): Promise<void> {
   try {
     // メール送信
-    await sendClaimEmail(email, requestId, tenant, lpId, emailConfig);
+    await sendClaimEmail(email, requestId, tenant, lpId, productType, emailConfig);
 
   } catch (error) {
     console.error("Failed to send email link:", error);
@@ -291,7 +292,7 @@ export async function handleLpForm(req: Request, res: Response): Promise<void> {
     await db.collection("claimRequests").doc(requestId).set(claimRequestData);
 
     // メールリンク送信
-    await sendEmailLink(sanitizedEmail, requestId, sanitizedTenant, sanitizedLpId, emailConfig);
+    await sendEmailLink(sanitizedEmail, requestId, sanitizedTenant, sanitizedLpId, sanitizedProductType, emailConfig);
 
     // フォーム送信者向け確認メール送信
     await sendConfirmationEmail(sanitizedEmail, sanitizedProductType, requestId, sanitizedTenant, sanitizedLpId, emailConfig);

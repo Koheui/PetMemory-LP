@@ -105,7 +105,7 @@ function getEmailConfig(tenant: string, lpId: string, productType: string, email
   const getBrandName = (tenant: string): string => {
     const brandMap: { [key: string]: string } = {
       'petmem': 'PetMemory',
-      'futurestudio': 'Future Studio',
+      'futurestudio': 'emolink',
       'emolink': 'エモリンククラウド',
       // 新しいテナントは自動的にテナント名をブランド名として使用
     };
@@ -206,7 +206,7 @@ function generateCommonEmailTemplate(
         <div class="footer">
           <p>${footerMessage || `${headerTitle} - 大切な想い出を永遠に`}</p>
           <p>このメールは自動送信されています。返信はできません。</p>
-          <p style="font-size: 10px; color: #9ca3af; margin-top: 8px;">v1.1</p>
+          <p style="font-size: 10px; color: #9ca3af; margin-top: 8px;">v1.1.1</p>
         </div>
       </div>
     </body>
@@ -222,9 +222,19 @@ function generateClaimEmailTemplate(
   claimUrl: string,
   requestId: string,
   tenant: string,
-  lpId: string
+  lpId: string,
+  productType: string,
+  emailConfig?: {
+    headerTitle?: string;
+    headerSubtitle?: string;
+    mainMessage?: string;
+    buttonText?: string;
+    footerMessage?: string;
+    claimEmailSubject?: string;
+    confirmationEmailSubject?: string;
+  }
 ): string {
-  const config = getEmailConfig(tenant, lpId, 'standard'); // 仮のproductTypeを渡す
+  const config = getEmailConfig(tenant, lpId, productType, emailConfig);
   
   const additionalInfo = `
     <strong>⚠️ ご注意</strong><br>
@@ -286,6 +296,7 @@ export async function sendClaimEmail(
   requestId: string,
   tenant: string,
   lpId: string,
+  productType: string,
   emailConfig?: {
     headerTitle?: string;
     headerSubtitle?: string;
@@ -312,9 +323,9 @@ export async function sendClaimEmail(
 
     // Gmail SMTP でメール送信を試行
     if (config.GMAIL_USER && config.GMAIL_APP_PASSWORD) {
-      const emailSettings = getEmailConfig(tenant, lpId, 'standard', emailConfig);
+      const emailSettings = getEmailConfig(tenant, lpId, productType, emailConfig);
       const subject = emailSettings.claimEmailSubject;
-      const htmlContent = generateClaimEmailTemplate(email, continueUrl, requestId, tenant, lpId);
+      const htmlContent = generateClaimEmailTemplate(email, continueUrl, requestId, tenant, lpId, productType, emailConfig);
       
       await sendEmailWithGmail(email, subject, htmlContent);
       return;

@@ -120,7 +120,7 @@ export const lpForm = functions
       const requestId = 'test-' + Date.now();
       
       console.log('📤 Sending email...');
-      await sendClaimEmail(email, requestId, tenant, lpId);
+      await sendClaimEmail(email, requestId, tenant, lpId, productType);
       console.log('✅ Email sent successfully');
       
       res.json({
