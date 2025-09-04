@@ -1,21 +1,22 @@
 /**
- * Firebase Functions エントリーポイント（最小限版）
+ * Firebase Functions エントリーポイント（テスト用簡略版）
  */
 
 import * as functions from "firebase-functions";
 
-// 最小限のFunction
-export const helloWorld = functions
+// ヘルスチェック
+export const health = functions
   .region("asia-northeast1")
   .https
   .onRequest((req, res) => {
     res.json({
-      message: "Hello from Firebase Functions!",
+      ok: true,
+      message: "PetMemory Functions API is healthy",
       timestamp: new Date().toISOString(),
     });
   });
 
-// LPフォーム用のFunction
+// LPフォーム用のFunction（テスト用）
 export const lpForm = functions
   .region("asia-northeast1")
   .https
@@ -38,12 +39,15 @@ export const lpForm = functions
       return;
     }
     
-    // 簡単なレスポンス
+    // テスト用の簡単なレスポンス
     res.json({
       ok: true,
       message: "LP form received successfully",
       data: {
         email: req.body.email,
+        tenant: req.body.tenant,
+        lpId: req.body.lpId,
+        productType: req.body.productType,
         timestamp: new Date().toISOString(),
       },
     });

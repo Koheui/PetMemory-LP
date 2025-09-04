@@ -14,7 +14,7 @@ const CONFIG = {
   LP_ID: import.meta.env?.VITE_LP_ID || 'direct',
   
   // API エンドポイント
-  API_ENDPOINT: '/api-gate-lp-form',
+  API_ENDPOINT: 'http://localhost:5002/lpForm',
   
   // バリデーション設定
   EMAIL_PATTERN: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
