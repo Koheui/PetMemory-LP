@@ -201,95 +201,150 @@
         </div>
     </section>
 
-    <!-- Price Section -->
-    <section class="price" id="price">
-        <div class="container">
-            <h2 class="section-title">料金プラン</h2>
-            <div class="price-grid">
-                <div class="price-card">
-                    <div class="price-header">
-                        <h3>6cm サイズ</h3>
-                        <div class="price-amount">
-                            <span class="price-currency">¥</span>
-                            <span class="price-value">4,500</span>
-                            <span class="price-unit">（税込）</span>
+    <!-- Price Section - 完全独立版 -->
+    <div id="price" style="display: block !important; visibility: visible !important; padding: 4rem 0; background-color: #f8fafc; margin: 0; width: 100%; min-height: 600px;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 1rem;">
+            <h2 style="font-size: 1.875rem; font-weight: 700; text-align: center; margin-bottom: 4rem; color: #1f2937;">料金プラン</h2>
+            <div style="display: grid !important; visibility: visible !important; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+                
+                <!-- 6cm サイズ -->
+                <div style="background: #ffffff; border-radius: 0.75rem; padding: 2rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); border: 2px solid transparent; transition: all 0.3s ease; position: relative;">
+                    <div style="background: linear-gradient(135deg, #2563eb, #3b82f6); color: #ffffff; padding: 2rem; text-align: center; border-radius: 0.75rem 0.75rem 0 0; margin: -2rem -2rem 2rem -2rem;">
+                        <h3 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">6cm サイズ</h3>
+                        <div style="display: flex; align-items: baseline; justify-content: center; gap: 0.5rem;">
+                            <span style="font-size: 1.25rem; font-weight: 600;">¥</span>
+                            <span style="font-size: 3rem; font-weight: 700;">4,500</span>
+                            <span style="font-size: 1.125rem; opacity: 0.8;">（税込）</span>
                         </div>
                     </div>
-                    <div class="price-features">
-                        <ul>
-                            <li>専用想い出ページ作成・編集</li>
-                            <li>アクリルスタンド（6cm）</li>
-                            <li>NFCタグ書き込み</li>
-                            <li>QRコード印刷物同梱</li>
-                            <li>全国送料無料</li>
+                    <div style="padding: 0;">
+                        <ul style="list-style: none; margin: 0; padding: 0;">
+                            <li style="padding: 0.75rem 0; border-bottom: 1px solid #e5e7eb; position: relative; padding-left: 1.5rem;">✓ 専用想い出ページ作成・編集</li>
+                            <li style="padding: 0.75rem 0; border-bottom: 1px solid #e5e7eb; position: relative; padding-left: 1.5rem;">✓ アクリルスタンド（6cm）</li>
+                            <li style="padding: 0.75rem 0; border-bottom: 1px solid #e5e7eb; position: relative; padding-left: 1.5rem;">✓ NFCタグ書き込み</li>
+                            <li style="padding: 0.75rem 0; border-bottom: 1px solid #e5e7eb; position: relative; padding-left: 1.5rem;">✓ QRコード印刷物同梱</li>
+                            <li style="padding: 0.75rem 0; position: relative; padding-left: 1.5rem;">✓ 全国送料無料</li>
                         </ul>
                     </div>
-                    <button class="btn btn-primary price-btn" data-size="6cm" data-price="4500">
+                    <button onclick="selectPrice('6cm', 4500)" style="width: 100%; margin-top: 1.5rem; display: inline-flex; align-items: center; justify-content: center; padding: 0.75rem 1.5rem; border: none; border-radius: 0.75rem; font-size: 1rem; font-weight: 600; text-align: center; cursor: pointer; transition: all 0.2s ease; text-decoration: none; min-height: 44px; background-color: #2563eb; color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
                         6cmサイズを選ぶ
                     </button>
                 </div>
                 
-                <div class="price-card price-card-featured">
-                    <div class="price-badge">おすすめ</div>
-                    <div class="price-header">
-                        <h3>10cm サイズ</h3>
-                        <div class="price-amount">
-                            <span class="price-currency">¥</span>
-                            <span class="price-value">6,000</span>
-                            <span class="price-unit">（税込）</span>
+                <!-- 10cm サイズ（おすすめ） -->
+                <div style="background: #ffffff; border-radius: 0.75rem; padding: 2rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); border: 2px solid #2563eb; transition: all 0.3s ease; position: relative; transform: scale(1.05);">
+                    <div style="position: absolute; top: -12px; left: 50%; transform: translate(-50%); background: #2563eb; color: #ffffff; padding: 0.5rem 1.5rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600;">おすすめ</div>
+                    <div style="background: linear-gradient(135deg, #2563eb, #3b82f6); color: #ffffff; padding: 2rem; text-align: center; border-radius: 0.75rem 0.75rem 0 0; margin: -2rem -2rem 2rem -2rem;">
+                        <h3 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">10cm サイズ</h3>
+                        <div style="display: flex; align-items: baseline; justify-content: center; gap: 0.5rem;">
+                            <span style="font-size: 1.25rem; font-weight: 600;">¥</span>
+                            <span style="font-size: 3rem; font-weight: 700;">6,000</span>
+                            <span style="font-size: 1.125rem; opacity: 0.8;">（税込）</span>
                         </div>
                     </div>
-                    <div class="price-features">
-                        <ul>
-                            <li>専用想い出ページ作成・編集</li>
-                            <li>アクリルスタンド（10cm）</li>
-                            <li>NFCタグ書き込み</li>
-                            <li>QRコード印刷物同梱</li>
-                            <li>全国送料無料</li>
+                    <div style="padding: 0;">
+                        <ul style="list-style: none; margin: 0; padding: 0;">
+                            <li style="padding: 0.75rem 0; border-bottom: 1px solid #e5e7eb; position: relative; padding-left: 1.5rem;">✓ 専用想い出ページ作成・編集</li>
+                            <li style="padding: 0.75rem 0; border-bottom: 1px solid #e5e7eb; position: relative; padding-left: 1.5rem;">✓ アクリルスタンド（10cm）</li>
+                            <li style="padding: 0.75rem 0; border-bottom: 1px solid #e5e7eb; position: relative; padding-left: 1.5rem;">✓ NFCタグ書き込み</li>
+                            <li style="padding: 0.75rem 0; border-bottom: 1px solid #e5e7eb; position: relative; padding-left: 1.5rem;">✓ QRコード印刷物同梱</li>
+                            <li style="padding: 0.75rem 0; position: relative; padding-left: 1.5rem;">✓ 全国送料無料</li>
                         </ul>
                     </div>
-                    <button class="btn btn-primary price-btn" data-size="10cm" data-price="6000">
+                    <button onclick="selectPrice('10cm', 6000)" style="width: 100%; margin-top: 1.5rem; display: inline-flex; align-items: center; justify-content: center; padding: 0.75rem 1.5rem; border: none; border-radius: 0.75rem; font-size: 1rem; font-weight: 600; text-align: center; cursor: pointer; transition: all 0.2s ease; text-decoration: none; min-height: 44px; background-color: #2563eb; color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
                         10cmサイズを選ぶ
                     </button>
                 </div>
                 
-                <div class="price-card">
-                    <div class="price-header">
-                        <h3>14cm サイズ</h3>
-                        <div class="price-amount">
-                            <span class="price-currency">¥</span>
-                            <span class="price-value">8,000</span>
-                            <span class="price-unit">（税込）</span>
+                <!-- 14cm サイズ -->
+                <div style="background: #ffffff; border-radius: 0.75rem; padding: 2rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); border: 2px solid transparent; transition: all 0.3s ease; position: relative;">
+                    <div style="background: linear-gradient(135deg, #2563eb, #3b82f6); color: #ffffff; padding: 2rem; text-align: center; border-radius: 0.75rem 0.75rem 0 0; margin: -2rem -2rem 2rem -2rem;">
+                        <h3 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">14cm サイズ</h3>
+                        <div style="display: flex; align-items: baseline; justify-content: center; gap: 0.5rem;">
+                            <span style="font-size: 1.25rem; font-weight: 600;">¥</span>
+                            <span style="font-size: 3rem; font-weight: 700;">8,000</span>
+                            <span style="font-size: 1.125rem; opacity: 0.8;">（税込）</span>
                         </div>
                     </div>
-                    <div class="price-features">
-                        <ul>
-                            <li>専用想い出ページ作成・編集</li>
-                            <li>アクリルスタンド（14cm）</li>
-                            <li>NFCタグ書き込み</li>
-                            <li>QRコード印刷物同梱</li>
-                            <li>全国送料無料</li>
+                    <div style="padding: 0;">
+                        <ul style="list-style: none; margin: 0; padding: 0;">
+                            <li style="padding: 0.75rem 0; border-bottom: 1px solid #e5e7eb; position: relative; padding-left: 1.5rem;">✓ 専用想い出ページ作成・編集</li>
+                            <li style="padding: 0.75rem 0; border-bottom: 1px solid #e5e7eb; position: relative; padding-left: 1.5rem;">✓ アクリルスタンド（14cm）</li>
+                            <li style="padding: 0.75rem 0; border-bottom: 1px solid #e5e7eb; position: relative; padding-left: 1.5rem;">✓ NFCタグ書き込み</li>
+                            <li style="padding: 0.75rem 0; border-bottom: 1px solid #e5e7eb; position: relative; padding-left: 1.5rem;">✓ QRコード印刷物同梱</li>
+                            <li style="padding: 0.75rem 0; position: relative; padding-left: 1.5rem;">✓ 全国送料無料</li>
                         </ul>
                     </div>
-                    <button class="btn btn-primary price-btn" data-size="14cm" data-price="8000">
+                    <button onclick="selectPrice('14cm', 8000)" style="width: 100%; margin-top: 1.5rem; display: inline-flex; align-items: center; justify-content: center; padding: 0.75rem 1.5rem; border: none; border-radius: 0.75rem; font-size: 1rem; font-weight: 600; text-align: center; cursor: pointer; transition: all 0.2s ease; text-decoration: none; min-height: 44px; background-color: #2563eb; color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
                         14cmサイズを選ぶ
                     </button>
                 </div>
             </div>
-            <div class="price-note">
-                <p><strong>買い切り価格</strong>で月額費用は一切かかりません</p>
+            <div style="background-color: #f8fafc; padding: 1.5rem; text-align: center; border-radius: 0.75rem;">
+                <p style="color: #2563eb; font-weight: 600; margin: 0;"><strong>買い切り価格</strong>で月額費用は一切かかりません</p>
             </div>
         </div>
-    </section>
+    </div>
 
     <!-- Order Form Section -->
-    <section class="order" id="order">
+    <section class="order" id="order" style="display: none;">
         <div class="container">
             <h2 class="section-title">お申し込み</h2>
+            
+            <!-- ステップインジケーター -->
+            <div class="step-indicator" id="stepIndicator">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">サイズ選択</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">基本情報</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">写真アップロード</div>
+                </div>
+                <div class="step" data-step="4">
+                    <div class="step-number">4</div>
+                    <div class="step-label">配送先</div>
+                </div>
+                <div class="step" data-step="5">
+                    <div class="step-number">5</div>
+                    <div class="step-label">決済</div>
+                </div>
+            </div>
+            
+            <!-- プログレスバー -->
+            <div class="progress-bar">
+                <div class="progress" id="progressBar" style="width: 20%"></div>
+            </div>
+            
             <div class="order-form-container">
-                <form class="order-form" id="orderForm" action="javascript:void(0);" onsubmit="return false;">
+                <!-- ステップ1: サイズ選択 -->
+                <div id="step-1" class="step-content">
+                    <div class="step-header">
+                        <h3>サイズを選択してください</h3>
+                        <p>お好みのサイズを選択してください</p>
+                    </div>
+                    <!-- メインのprice-gridを使用 -->
+                    
+                    <!-- 次へボタン -->
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button type="button" class="btn btn-primary" onclick="goToPayment()" style="display: none;" id="step1NextBtn">
+                            次へ
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- ステップ2: 基本情報入力 -->
+                <div id="step-2" class="step-content" style="display: none;">
+                    <div class="step-header">
+                        <h3>基本情報を入力してください</h3>
+                        <p>メールアドレスと電話番号を入力してください</p>
+                    </div>
                     <div class="form-group">
-                        <label for="email" class="form-label">メールアドレス</label>
+                        <label for="email" class="form-label">メールアドレス *</label>
                         <input 
                             type="email" 
                             id="email" 
@@ -300,8 +355,152 @@
                         >
                         <div class="form-error" id="emailError"></div>
                     </div>
-                    
-                    <!-- Stripe決済要素 -->
+                    <div class="form-group">
+                        <label for="phone" class="form-label">電話番号</label>
+                        <input 
+                            type="tel" 
+                            id="phone" 
+                            name="phone" 
+                            class="form-input" 
+                            placeholder="090-1234-5678"
+                        >
+                    </div>
+                </div>
+                
+                <!-- ステップ3: 写真アップロード -->
+                <div id="step-3" class="step-content" style="display: none;">
+                    <div class="step-header">
+                        <h3>写真をアップロードしてください</h3>
+                        <p>アクリルスタンドに使用したい写真を選択してください</p>
+                    </div>
+                    <div class="photo-upload-area">
+                        <input type="file" id="photoInput" accept="image/*" multiple>
+                        <div class="upload-preview" id="photoPreview"></div>
+                    </div>
+                </div>
+                
+                <!-- ステップ4: 配送先入力 -->
+                <div id="step-4" class="step-content" style="display: none;">
+                    <div class="step-header">
+                        <h3>配送先情報を入力してください</h3>
+                        <p>アクリルスタンドの配送先を入力してください</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="shippingName" class="form-label">配送先名 *</label>
+                        <input 
+                            type="text" 
+                            id="shippingName" 
+                            name="shippingName" 
+                            class="form-input" 
+                            required 
+                            placeholder="田中太郎"
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label for="postalCode" class="form-label">郵便番号 *</label>
+                        <input 
+                            type="text" 
+                            id="postalCode" 
+                            name="postalCode" 
+                            class="form-input" 
+                            required 
+                            placeholder="123-4567"
+                            pattern="[0-9]{3}-[0-9]{4}"
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label for="prefecture" class="form-label">都道府県 *</label>
+                        <select id="prefecture" name="prefecture" class="form-input" required>
+                            <option value="">選択してください</option>
+                            <option value="北海道">北海道</option>
+                            <option value="青森県">青森県</option>
+                            <option value="岩手県">岩手県</option>
+                            <option value="宮城県">宮城県</option>
+                            <option value="秋田県">秋田県</option>
+                            <option value="山形県">山形県</option>
+                            <option value="福島県">福島県</option>
+                            <option value="茨城県">茨城県</option>
+                            <option value="栃木県">栃木県</option>
+                            <option value="群馬県">群馬県</option>
+                            <option value="埼玉県">埼玉県</option>
+                            <option value="千葉県">千葉県</option>
+                            <option value="東京都">東京都</option>
+                            <option value="神奈川県">神奈川県</option>
+                            <option value="新潟県">新潟県</option>
+                            <option value="富山県">富山県</option>
+                            <option value="石川県">石川県</option>
+                            <option value="福井県">福井県</option>
+                            <option value="山梨県">山梨県</option>
+                            <option value="長野県">長野県</option>
+                            <option value="岐阜県">岐阜県</option>
+                            <option value="静岡県">静岡県</option>
+                            <option value="愛知県">愛知県</option>
+                            <option value="三重県">三重県</option>
+                            <option value="滋賀県">滋賀県</option>
+                            <option value="京都府">京都府</option>
+                            <option value="大阪府">大阪府</option>
+                            <option value="兵庫県">兵庫県</option>
+                            <option value="奈良県">奈良県</option>
+                            <option value="和歌山県">和歌山県</option>
+                            <option value="鳥取県">鳥取県</option>
+                            <option value="島根県">島根県</option>
+                            <option value="岡山県">岡山県</option>
+                            <option value="広島県">広島県</option>
+                            <option value="山口県">山口県</option>
+                            <option value="徳島県">徳島県</option>
+                            <option value="香川県">香川県</option>
+                            <option value="愛媛県">愛媛県</option>
+                            <option value="高知県">高知県</option>
+                            <option value="福岡県">福岡県</option>
+                            <option value="佐賀県">佐賀県</option>
+                            <option value="長崎県">長崎県</option>
+                            <option value="熊本県">熊本県</option>
+                            <option value="大分県">大分県</option>
+                            <option value="宮崎県">宮崎県</option>
+                            <option value="鹿児島県">鹿児島県</option>
+                            <option value="沖縄県">沖縄県</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="city" class="form-label">市区町村 *</label>
+                        <input 
+                            type="text" 
+                            id="city" 
+                            name="city" 
+                            class="form-input" 
+                            required 
+                            placeholder="渋谷区"
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label for="address1" class="form-label">住所1 *</label>
+                        <input 
+                            type="text" 
+                            id="address1" 
+                            name="address1" 
+                            class="form-input" 
+                            required 
+                            placeholder="道玄坂1-2-3"
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label for="address2" class="form-label">住所2（マンション名等）</label>
+                        <input 
+                            type="text" 
+                            id="address2" 
+                            name="address2" 
+                            class="form-input" 
+                            placeholder="○○マンション101号室"
+                        >
+                    </div>
+                </div>
+                
+                <!-- ステップ5: 決済 -->
+                <div id="step-5" class="step-content" style="display: none;">
+                    <div class="step-header">
+                        <h3>お支払い情報を入力してください</h3>
+                        <p>カード情報を入力して決済を完了してください</p>
+                    </div>
                     <div class="form-group">
                         <label class="form-label">お支払い情報</label>
                         <div id="card-element" class="stripe-card-element">
@@ -309,18 +508,20 @@
                         </div>
                         <div id="card-errors" class="form-error" role="alert"></div>
                     </div>
-                    
-                    <!-- Hidden fields (v1.1仕様: サーバ側でOriginから解決) -->
-                    <!-- 削除: 環境変数から動的に取得 -->
-                    
-                    <button type="submit" class="btn btn-primary btn-large" id="submitBtn" aria-describedby="submitHelp">
-                        <span class="btn-text" id="submitText">サイズを選択してください</span>
-                        <span class="btn-spinner" id="spinner" style="display: none;" aria-hidden="true">処理中...</span>
+                </div>
+                
+                <!-- ナビゲーションボタン -->
+                <div class="step-navigation">
+                    <button type="button" class="btn btn-secondary" id="prevBtn" onclick="prevStep()" style="display: none;">
+                        前へ
                     </button>
-                    <div id="submitHelp" class="sr-only">フォーム送信ボタン。メールアドレスとお支払い情報を入力後、このボタンを押してください。</div>
-                    
-                    <div class="form-error" id="generalError" style="display: none;"></div>
-                </form>
+                    <button type="button" class="btn btn-primary" id="submitBtn" onclick="submitOrder()" style="display: none;">
+                        決済完了
+                    </button>
+                </div>
+                
+                <div class="form-error" id="generalError" style="display: none;"></div>
+            </div>
                 
                 <!-- 成功メッセージ（フォームの外に配置） -->
                 <div class="form-success" id="successMessage" style="display: none;">
@@ -360,9 +561,8 @@
                     </div>
                     <div class="footer-column">
                         <h4>サポート</h4>
-                        <a href="mailto:support@example.com">お問い合わせ</a>
-                        <a href="/privacy">プライバシーポリシー</a>
-                        <a href="/terms">利用規約</a>
+                        <a href="mailto:office@futurestudio.co.jp">お問い合わせ</a>
+                        <a href="/legal.html">特定商取引法に基づく表記</a>
                     </div>
                 </div>
             </div>
@@ -375,6 +575,161 @@
 
     <!-- Scripts -->
     <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/product-catalog.js"></script>
+    <script type="module" src="js/step-input.js"></script>
     <script type="module" src="js/stripe-payment.js"></script>
+    
+    <script>
+        // 料金プラン選択関数
+        function selectPrice(size, price) {
+            console.log('選択されたサイズ:', size, '価格:', price);
+            
+            // 選択された商品情報を保存
+            localStorage.setItem('selectedProduct', JSON.stringify({
+                size: size,
+                price: price
+            }));
+            
+            // 選択されたサイズを表示
+            showSelectedSize(size, price);
+            
+            // 段階的入力フローを開始
+            startStepInputFlow();
+        }
+        
+        // 選択されたサイズを表示する関数
+        function showSelectedSize(size, price) {
+            const step1 = document.getElementById('step-1');
+            if (step1) {
+                // 既存の選択表示を削除
+                const existingSelected = step1.querySelector('.selected-size-info');
+                if (existingSelected) {
+                    existingSelected.remove();
+                }
+                
+                // 選択されたサイズの表示を追加
+                const selectedInfo = document.createElement('div');
+                selectedInfo.className = 'selected-size-info';
+                selectedInfo.style.cssText = 'background: #f0f9ff; border: 2px solid #2563eb; border-radius: 0.75rem; padding: 1rem; margin: 1rem 0; text-align: center; position: relative;';
+                selectedInfo.innerHTML = `
+                    <button onclick="removeSelectedSize()" style="position: absolute; top: 0.5rem; right: 0.5rem; background: #ef4444; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center;">×</button>
+                    <h4 style="color: #2563eb; margin: 0 0 0.5rem 0; font-size: 1.125rem;">選択されたサイズ</h4>
+                    <p style="margin: 0; font-size: 1.25rem; font-weight: 600; color: #1f2937;">${size} サイズ - ¥${price.toLocaleString()}（税込）</p>
+                `;
+                step1.appendChild(selectedInfo);
+                
+                // 「次へ」ボタンを表示
+                const nextBtn = document.getElementById('step1NextBtn');
+                if (nextBtn) {
+                    nextBtn.style.display = 'inline-flex';
+                }
+            }
+        }
+        
+        // 選択されたサイズを削除する関数
+        function removeSelectedSize() {
+            const step1 = document.getElementById('step-1');
+            if (step1) {
+                const selectedInfo = step1.querySelector('.selected-size-info');
+                if (selectedInfo) {
+                    selectedInfo.remove();
+                }
+                
+                // 「次へ」ボタンを非表示
+                const nextBtn = document.getElementById('step1NextBtn');
+                if (nextBtn) {
+                    nextBtn.style.display = 'none';
+                }
+            }
+            
+            // localStorageからも削除
+            localStorage.removeItem('selectedProduct');
+            
+            // 注文セクションを非表示
+            const orderSection = document.getElementById('order');
+            if (orderSection) {
+                orderSection.style.display = 'none';
+            }
+        }
+        
+        // 段階的入力フロー開始関数
+        function startStepInputFlow() {
+            // 注文セクションを表示
+            const orderSection = document.getElementById('order');
+            if (orderSection) {
+                orderSection.style.display = 'block';
+                orderSection.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            // ステップ1を表示
+            const step1 = document.getElementById('step-1');
+            if (step1) {
+                step1.style.display = 'block';
+            }
+            
+            // ステップインジケーターを更新
+            updateStepIndicator(1);
+        }
+        
+        // 決済ページに遷移する関数
+        function goToPayment() {
+            // 選択された商品情報を取得
+            const selectedProduct = JSON.parse(localStorage.getItem('selectedProduct') || '{}');
+            
+            if (!selectedProduct.size || !selectedProduct.price) {
+                alert('サイズを選択してください');
+                return;
+            }
+            
+            // 確認ダイアログ
+            const confirmMessage = `選択されたサイズ: ${selectedProduct.size} サイズ - ¥${selectedProduct.price.toLocaleString()}（税込）\n\n決済ページに進みますか？`;
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+            
+            // 決済ページに遷移
+            window.location.href = '/payment.html';
+        }
+        
+        // ステップインジケーター更新関数
+        function updateStepIndicator(currentStep) {
+            const steps = document.querySelectorAll('.step');
+            steps.forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index + 1 < currentStep) {
+                    step.classList.add('completed');
+                } else if (index + 1 === currentStep) {
+                    step.classList.add('active');
+                }
+            });
+            
+            // プログレスバーを更新
+            const progressBar = document.getElementById('progressBar');
+            if (progressBar) {
+                const progress = (currentStep / 5) * 100;
+                progressBar.style.width = progress + '%';
+            }
+        }
+        
+        // ページ読み込み時に料金プランセクションを強制表示
+        document.addEventListener('DOMContentLoaded', function() {
+            const priceSection = document.getElementById('price');
+            if (priceSection) {
+                priceSection.style.display = 'block';
+                priceSection.style.visibility = 'visible';
+                priceSection.style.padding = '4rem 0';
+                priceSection.style.backgroundColor = '#f8fafc';
+            }
+            
+            const priceGrid = document.getElementById('price-grid');
+            if (priceGrid) {
+                priceGrid.style.display = 'grid';
+                priceGrid.style.visibility = 'visible';
+                priceGrid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(300px, 1fr))';
+                priceGrid.style.gap = '2rem';
+                priceGrid.style.marginBottom = '2rem';
+            }
+        });
+    </script>
 </body>
 </html>

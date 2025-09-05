@@ -4,7 +4,7 @@
  */
 
 // Stripe設定
-const STRIPE_PUBLISHABLE_KEY = 'pk_test_51234567890abcdef'; // テスト用キー（本番では環境変数から取得）
+const STRIPE_PUBLISHABLE_KEY = 'pk_live_51Rl1GKLxm2EHJLr5ySCvOzMTpLfjGRgC9aPnLmKHtQsI2bqw84jnSEh77qCB7easAxkknZNaaSk01d6SrVBUMqig00FWkcht3q'; // 本番用キー
 const STRIPE_SECRET_KEY = 'sk_test_51234567890abcdef'; // テスト用キー（本番では環境変数から取得）
 
 /**
@@ -64,6 +64,99 @@ let selectedPrice = {
 };
 
 /**
+ * 段階的入力フローを開始
+ */
+function startStepInputFlow() {
+  // 段階的入力フォームを表示
+  const orderSection = document.getElementById('order');
+  if (orderSection) {
+    orderSection.style.display = 'block';
+    orderSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    
+    // ステップ1（サイズ選択）を表示
+    showStep(1);
+  }
+}
+
+/**
+ * ステップを表示
+ */
+function showStep(stepNumber) {
+  // 全ステップを非表示
+  const steps = document.querySelectorAll('.step-content');
+  steps.forEach(step => step.style.display = 'none');
+  
+  // 指定されたステップを表示
+  const targetStep = document.getElementById(`step-${stepNumber}`);
+  if (targetStep) {
+    targetStep.style.display = 'block';
+  }
+  
+  // ステップインジケーターを更新
+  updateStepIndicator(stepNumber);
+}
+
+/**
+ * ステップインジケーターを更新
+ */
+function updateStepIndicator(currentStep) {
+  const stepElements = document.querySelectorAll('.step-indicator .step');
+  stepElements.forEach((stepElement, index) => {
+    const stepNumber = index + 1;
+    stepElement.classList.remove('active', 'completed');
+    if (stepNumber < currentStep) {
+      stepElement.classList.add('completed');
+    } else if (stepNumber === currentStep) {
+      stepElement.classList.add('active');
+    }
+  });
+  
+  // プログレスバー更新
+  const progressBar = document.getElementById('progressBar');
+  if (progressBar) {
+    const progressPercentage = (currentStep / 5) * 100;
+    progressBar.style.width = `${progressPercentage}%`;
+  }
+}
+
+/**
+ * 決済フォームを表示
+ */
+function showPaymentForm() {
+  // 決済フォームセクションを表示
+  const paymentSection = document.getElementById('order');
+  if (paymentSection) {
+    paymentSection.style.display = 'block';
+    
+    // 選択された商品情報を表示
+    updateSelectedProductDisplay();
+    
+    // 決済フォームにフォーカス
+    const emailInput = document.getElementById('email');
+    if (emailInput) {
+      emailInput.focus();
+    }
+  }
+}
+
+/**
+ * 選択された商品情報を表示
+ */
+function updateSelectedProductDisplay() {
+  if (selectedPrice.size && selectedPrice.price) {
+    const selectedProductDiv = document.getElementById('selectedProduct');
+    const selectedSizeSpan = document.getElementById('selectedSize');
+    const selectedPriceSpan = document.getElementById('selectedPrice');
+    
+    if (selectedProductDiv && selectedSizeSpan && selectedPriceSpan) {
+      selectedSizeSpan.textContent = `${selectedPrice.size}cm`;
+      selectedPriceSpan.textContent = `¥${selectedPrice.price.toLocaleString()}`;
+      selectedProductDiv.style.display = 'block';
+    }
+  }
+}
+
+/**
  * 初期化
  */
 async function initializeStripe() {
@@ -117,32 +210,25 @@ async function initializeStripe() {
     elements_ui.generalError = document.getElementById('generalError');
     elements_ui.successMessage = document.getElementById('successMessage');
 
-    // 価格選択ボタンのイベントリスナー
-    const priceButtons = document.querySelectorAll('.price-btn');
-    priceButtons.forEach(button => {
-      button.addEventListener('click', (e) => {
-        e.preventDefault();
-        const size = button.dataset.size;
-        const price = parseInt(button.dataset.price);
-        
-        // 選択状態の更新
-        priceButtons.forEach(btn => btn.classList.remove('selected'));
-        button.classList.add('selected');
-        
-        // 選択された価格の保存
-        selectedPrice = { size, price };
-        
-        // 送信ボタンの更新
-        elements_ui.submitText.textContent = `¥${price.toLocaleString()}で申し込む`;
-        elements_ui.submitBtn.disabled = false;
-        
-        // フォームにスクロール
-        document.getElementById('order').scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        });
-      });
-    });
+    // 価格選択ボタンのイベントリスナー（step-input.jsで処理されるため無効化）
+    // const priceButtons = document.querySelectorAll('.price-btn');
+    // priceButtons.forEach(button => {
+    //   button.addEventListener('click', (e) => {
+    //     e.preventDefault();
+    //     const size = button.dataset.size;
+    //     const price = parseInt(button.dataset.price);
+    //     
+    //     // 選択状態の更新
+    //     priceButtons.forEach(btn => btn.classList.remove('selected'));
+    //     button.classList.add('selected');
+    //     
+    //     // 選択された価格の保存
+    //     selectedPrice = { size, price };
+    //     
+    //     // 段階的入力フローを開始
+    //     startStepInputFlow();
+    //   });
+    // });
 
     // 初期状態では送信ボタンを無効化
     elements_ui.submitBtn.disabled = true;
@@ -270,34 +356,6 @@ async function handleFormSubmit(event) {
   }
 }
 
-/**
- * Payment Intent作成
- */
-async function createPaymentIntent(email, recaptchaToken) {
-  const response = await fetch('/api/create-payment-intent', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      email: email,
-      amount: 4980, // ¥4,980
-      currency: 'jpy',
-      recaptchaToken: recaptchaToken,
-      metadata: {
-        tenant: window.VITE_TENANT_ID || 'petmem',
-        lpId: window.VITE_LP_ID || 'direct',
-        productType: 'acrylic'
-      }
-    })
-  });
-  
-  if (!response.ok) {
-    throw new Error('Payment Intent作成に失敗しました');
-  }
-  
-  return await response.json();
-}
 
 /**
  * フォームバリデーション

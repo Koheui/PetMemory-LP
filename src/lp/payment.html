@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>決済 - emolink</title>
+    <meta name="description" content="emolink決済ページ - 注文内容の確認とお支払い">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/main.css">
+    
+    <!-- Stripe.js -->
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h1>emolink</h1>
+            </div>
+            <div class="nav-menu">
+                <a href="/" class="nav-link">トップページ</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Payment Page -->
+    <section class="payment-page">
+        <div class="container">
+            <h2 class="section-title">決済</h2>
+            
+            <!-- ステップインジケーター -->
+            <div class="step-indicator">
+                <div class="step completed" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">サイズ選択</div>
+                </div>
+                <div class="step completed" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">基本情報</div>
+                </div>
+                <div class="step completed" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">写真アップロード</div>
+                </div>
+                <div class="step completed" data-step="4">
+                    <div class="step-number">4</div>
+                    <div class="step-label">配送先</div>
+                </div>
+                <div class="step active" data-step="5">
+                    <div class="step-number">5</div>
+                    <div class="step-label">決済</div>
+                </div>
+            </div>
+            
+            <!-- プログレスバー -->
+            <div class="progress-bar">
+                <div class="progress" style="width: 100%"></div>
+            </div>
+            
+            <!-- 基本情報入力 -->
+            <div class="order-summary">
+                <h3>基本情報</h3>
+                <div class="form-group">
+                    <label for="email" class="form-label">メールアドレス *</label>
+                    <input type="email" id="email" name="email" class="form-input" required placeholder="your@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="phone" class="form-label">電話番号 *</label>
+                    <input type="tel" id="phone" name="phone" class="form-input" required placeholder="090-1234-5678">
+                </div>
+            </div>
+            
+            <!-- 配送先入力 -->
+            <div class="order-summary">
+                <h3>配送先情報</h3>
+                <div class="form-group">
+                    <label for="shippingName" class="form-label">お名前 *</label>
+                    <input type="text" id="shippingName" name="shippingName" class="form-input" required placeholder="田中太郎">
+                </div>
+                <div class="form-group">
+                    <label for="postalCode" class="form-label">郵便番号 *</label>
+                    <input type="text" id="postalCode" name="postalCode" class="form-input" required placeholder="123-4567">
+                </div>
+                <div class="form-group">
+                    <label for="prefecture" class="form-label">都道府県 *</label>
+                    <select id="prefecture" name="prefecture" class="form-input" required>
+                        <option value="">選択してください</option>
+                        <option value="北海道">北海道</option>
+                        <option value="青森県">青森県</option>
+                        <option value="岩手県">岩手県</option>
+                        <option value="宮城県">宮城県</option>
+                        <option value="秋田県">秋田県</option>
+                        <option value="山形県">山形県</option>
+                        <option value="福島県">福島県</option>
+                        <option value="茨城県">茨城県</option>
+                        <option value="栃木県">栃木県</option>
+                        <option value="群馬県">群馬県</option>
+                        <option value="埼玉県">埼玉県</option>
+                        <option value="千葉県">千葉県</option>
+                        <option value="東京都">東京都</option>
+                        <option value="神奈川県">神奈川県</option>
+                        <option value="新潟県">新潟県</option>
+                        <option value="富山県">富山県</option>
+                        <option value="石川県">石川県</option>
+                        <option value="福井県">福井県</option>
+                        <option value="山梨県">山梨県</option>
+                        <option value="長野県">長野県</option>
+                        <option value="岐阜県">岐阜県</option>
+                        <option value="静岡県">静岡県</option>
+                        <option value="愛知県">愛知県</option>
+                        <option value="三重県">三重県</option>
+                        <option value="滋賀県">滋賀県</option>
+                        <option value="京都府">京都府</option>
+                        <option value="大阪府">大阪府</option>
+                        <option value="兵庫県">兵庫県</option>
+                        <option value="奈良県">奈良県</option>
+                        <option value="和歌山県">和歌山県</option>
+                        <option value="鳥取県">鳥取県</option>
+                        <option value="島根県">島根県</option>
+                        <option value="岡山県">岡山県</option>
+                        <option value="広島県">広島県</option>
+                        <option value="山口県">山口県</option>
+                        <option value="徳島県">徳島県</option>
+                        <option value="香川県">香川県</option>
+                        <option value="愛媛県">愛媛県</option>
+                        <option value="高知県">高知県</option>
+                        <option value="福岡県">福岡県</option>
+                        <option value="佐賀県">佐賀県</option>
+                        <option value="長崎県">長崎県</option>
+                        <option value="熊本県">熊本県</option>
+                        <option value="大分県">大分県</option>
+                        <option value="宮崎県">宮崎県</option>
+                        <option value="鹿児島県">鹿児島県</option>
+                        <option value="沖縄県">沖縄県</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="city" class="form-label">市区町村 *</label>
+                    <input type="text" id="city" name="city" class="form-input" required placeholder="渋谷区">
+                </div>
+                <div class="form-group">
+                    <label for="address1" class="form-label">住所1（番地・建物名） *</label>
+                    <input type="text" id="address1" name="address1" class="form-input" required placeholder="1-2-3 マンション名">
+                </div>
+                <div class="form-group">
+                    <label for="address2" class="form-label">住所2（部屋番号など）</label>
+                    <input type="text" id="address2" name="address2" class="form-input" placeholder="101号室">
+                </div>
+            </div>
+            
+            <!-- 写真アップロード -->
+            <div class="order-summary">
+                <h3>写真アップロード</h3>
+                <div class="photo-upload-area" style="text-align: center;">
+                    <input type="file" id="photoUpload" name="photoUpload" accept="image/*" onchange="handlePhotoUpload(this)" style="display: none;">
+                    <div id="dropZone" style="border: 2px dashed #d1d5db; border-radius: 0.5rem; padding: 2rem; margin: 1rem 0; background: #f9fafb; transition: all 0.3s ease;" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                        <label for="photoUpload" style="display: inline-block; padding: 1rem 2rem; background: #2563eb; color: #ffffff; border-radius: 0.5rem; cursor: pointer; font-weight: 500; border: 2px solid #2563eb; transition: all 0.3s ease;">
+                            写真を選択
+                        </label>
+                        <p style="margin-top: 1rem; color: #6b7280;">または、ここに写真をドラッグ&ドロップ</p>
+                        <p style="margin-top: 0.5rem; color: #6b7280; font-size: 0.875rem;">1枚の写真を選択してください（5MB以下）</p>
+                    </div>
+                    <div id="photoPreview" class="upload-preview" style="display: flex; justify-content: center; margin-top: 1.5rem;"></div>
+                </div>
+            </div>
+            
+            
+            <!-- 決済処理 -->
+            <div class="payment-section">
+                <button id="submit-payment" class="btn btn-primary" style="width: 300px; margin: 0 auto; display: block;" onclick="console.log('🔘 ボタンクリック'); showConfirmModal();">
+                    <span class="btn-text" id="paymentButtonText">注文内容を確認して決済</span>
+                    <span class="btn-spinner" style="display: none;">処理中...</span>
+                </button>
+                
+                <div class="payment-note" style="text-align: center; margin-top: 1rem;">
+                    <p>※ 決済完了後、秘密鍵をメールでお送りいたします</p>
+                    <p>※ 秘密鍵で専用サイトにアクセスして想い出ページを作成できます</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 確認モーダル -->
+    <div id="confirmModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000;">
+        <div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
+            <div style="background: white; border-radius: 0.75rem; padding: 2rem; max-width: 500px; width: 90%; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+            <h3 style="color: #2563eb; margin: 0 0 1rem 0; font-size: 1.5rem; font-weight: 600;">注文内容の確認</h3>
+            
+            <div id="modalProductInfo" style="margin-bottom: 1rem;">
+                <!-- 動的に生成 -->
+            </div>
+            
+            <div id="modalShippingInfo" style="margin-bottom: 1rem;">
+                <!-- 動的に生成 -->
+            </div>
+            
+            <div id="modalPhotoInfo" style="margin-bottom: 1rem;">
+                <!-- 動的に生成 -->
+            </div>
+            
+            <div style="border-top: 1px solid #e5e7eb; padding-top: 1rem; margin-top: 1rem;">
+                <div style="margin-bottom: 0.75rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span>商品価格</span>
+                        <span id="modalItemPrice">-</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span>送料</span>
+                        <span>無料</span>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 0.75rem; border-top: 1px solid #e5e7eb;">
+                    <span style="font-weight: 600;">合計金額</span>
+                    <span id="modalTotalAmount" style="font-size: 1.25rem; font-weight: 700; color: #2563eb;"></span>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-bottom: 1rem;">
+                <p style="font-size: 0.875rem; color: #6b7280; margin: 0;">
+                    <a href="/legal.html" target="_blank" style="color: #2563eb; text-decoration: underline;">特定商取引法に基づく表記</a>を確認の上、決済を進めてください。
+                </p>
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem;">
+                <button onclick="closeConfirmModal()" style="padding: 0.75rem 1.5rem; border: 2px solid #6b7280; background: white; color: #6b7280; border-radius: 0.5rem; cursor: pointer; font-weight: 500;">
+                    キャンセル
+                </button>
+                <button onclick="proceedToPayment()" style="padding: 0.75rem 1.5rem; background: #2563eb; color: white; border: none; border-radius: 0.5rem; cursor: pointer; font-weight: 500;">
+                    Stripe 決済ページへ遷移
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>emolink</h3>
+                    <p>大切な想い出を永遠に</p>
+                </div>
+                <div class="footer-column">
+                    <h4>サービス</h4>
+                    <ul>
+                        <li><a href="/#experience">体験イメージ</a></li>
+                        <li><a href="/#demo">デモページ</a></li>
+                        <li><a href="/#price">料金</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>サポート</h4>
+                    <ul>
+                        <li><a href="mailto:office@futurestudio.co.jp">お問い合わせ</a></li>
+                        <li><a href="/legal.html">特定商取引法に基づく表記</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 emolink. All rights reserved.</p>
+                <p style="font-size: 12px; color: #6b7280; margin-top: 8px;">v1.1.1</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <!-- payment-page.jsは無効化（Stripe Payment Link方式のため） -->
+    <!-- <script type="module" src="js/payment-page.js"></script> -->
+    
+    <script>
+        // ページ読み込み時のログ
+        console.log('📄 payment.html が読み込まれました');
+        
+        // 確認モーダルを表示する関数
+        function showConfirmModal() {
+            console.log('🔍 showConfirmModal() が呼び出されました');
+            
+            // フォームの入力内容を取得
+            const formData = getFormData();
+            console.log('📋 フォームデータ:', formData);
+            
+            // バリデーション
+            if (!validateForm(formData)) {
+                console.log('❌ バリデーション失敗');
+                return;
+            }
+            
+            console.log('✅ バリデーション成功');
+            
+            // モーダルの内容を更新
+            updateModalContent(formData);
+            
+            // モーダルを表示
+            document.getElementById('confirmModal').style.display = 'block';
+            console.log('📱 確認モーダルを表示しました');
+        }
+        
+        // フォームデータを取得する関数
+        function getFormData() {
+            return {
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                shippingName: document.getElementById('shippingName').value,
+                postalCode: document.getElementById('postalCode').value,
+                prefecture: document.getElementById('prefecture').value,
+                city: document.getElementById('city').value,
+                address1: document.getElementById('address1').value,
+                address2: document.getElementById('address2').value,
+                photo: document.getElementById('photoUpload').files[0],
+                selectedProduct: JSON.parse(localStorage.getItem('selectedProduct') || '{}')
+            };
+        }
+        
+        // フォームのバリデーション
+        function validateForm(data) {
+            const requiredFields = ['email', 'phone', 'shippingName', 'postalCode', 'prefecture', 'city', 'address1'];
+            
+            for (const field of requiredFields) {
+                if (!data[field]) {
+                    alert(`${getFieldLabel(field)}を入力してください`);
+                    return false;
+                }
+            }
+            
+            if (!data.selectedProduct.size || !data.selectedProduct.price) {
+                alert('商品が選択されていません');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // フィールドラベルを取得
+        function getFieldLabel(field) {
+            const labels = {
+                email: 'メールアドレス',
+                phone: '電話番号',
+                shippingName: 'お名前',
+                postalCode: '郵便番号',
+                prefecture: '都道府県',
+                city: '市区町村',
+                address1: '住所1'
+            };
+            return labels[field] || field;
+        }
+        
+        // モーダルの内容を更新
+        function updateModalContent(data) {
+            // 商品情報
+            document.getElementById('modalProductInfo').innerHTML = `
+                <div style="background: #f8fafc; padding: 1rem; border-radius: 0.5rem;">
+                    <h4 style="margin: 0 0 0.5rem 0; color: #2563eb;">商品情報</h4>
+                    <p style="margin: 0;">${data.selectedProduct.size} サイズ - ¥${data.selectedProduct.price.toLocaleString()}（税込）</p>
+                </div>
+            `;
+            
+            // 配送先情報
+            document.getElementById('modalShippingInfo').innerHTML = `
+                <div style="background: #f8fafc; padding: 1rem; border-radius: 0.5rem;">
+                    <h4 style="margin: 0 0 0.5rem 0; color: #2563eb;">配送先</h4>
+                    <p style="margin: 0 0 0.25rem 0;">${data.shippingName}</p>
+                    <p style="margin: 0;">${data.postalCode} ${data.prefecture} ${data.city} ${data.address1} ${data.address2}</p>
+                </div>
+            `;
+            
+            // 写真情報
+            const photoInfo = data.photo ? 
+                `<div style="background: #f8fafc; padding: 1rem; border-radius: 0.5rem;">
+                    <h4 style="margin: 0 0 0.5rem 0; color: #2563eb;">写真</h4>
+                    <p style="margin: 0;">${data.photo.name}</p>
+                </div>` :
+                `<div style="background: #fef2f2; padding: 1rem; border-radius: 0.5rem; border: 1px solid #fecaca;">
+                    <h4 style="margin: 0 0 0.5rem 0; color: #ef4444;">写真</h4>
+                    <p style="margin: 0; color: #ef4444;">写真がアップロードされていません</p>
+                </div>`;
+            document.getElementById('modalPhotoInfo').innerHTML = photoInfo;
+            
+            // 商品価格と合計金額
+            document.getElementById('modalItemPrice').textContent = `¥${data.selectedProduct.price.toLocaleString()}（税込）`;
+            document.getElementById('modalTotalAmount').textContent = `¥${data.selectedProduct.price.toLocaleString()}（税込）`;
+        }
+        
+        // モーダルを閉じる関数
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+        
+        // Stripe Checkoutへ遷移する関数
+        // Stripe Checkout Session作成して遷移する関数
+        async function proceedToPayment() {
+            console.log('🚀 proceedToPayment() が呼び出されました');
+            
+            // モーダルを閉じる
+            closeConfirmModal();
+            
+            // フォームデータを取得
+            const formData = getFormData();
+            console.log('📋 proceedToPayment フォームデータ:', formData);
+            
+            try {
+                // Firebase FunctionsのCheckout Session作成APIを呼び出し
+                const response = await fetch('https://asia-northeast1-memorylink-cms.cloudfunctions.net/api/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        productInfo: formData.selectedProduct,
+                        customerInfo: {
+                            email: formData.email,
+                            phone: formData.phone,
+                            shippingInfo: formData.shippingInfo
+                        },
+                        photo: formData.photo
+                    })
+                });
+                
+                const result = await response.json();
+                console.log('🔗 Checkout Session作成結果:', result);
+                
+                if (result.success && result.checkoutUrl) {
+                    // Stripe Checkoutページに遷移
+                    window.location.href = result.checkoutUrl;
+                } else {
+                    alert('決済ページの作成に失敗しました。もう一度お試しください。');
+                }
+                
+            } catch (error) {
+                console.error('❌ Checkout Session作成エラー:', error);
+                alert('決済ページの作成に失敗しました。もう一度お試しください。');
+            }
+        }
+        
+        // 写真アップロード処理
+        function handlePhotoUpload(input) {
+            const file = input.files[0];
+            const preview = document.getElementById('photoPreview');
+            const label = document.querySelector('label[for="photoUpload"]');
+            
+            if (file) {
+                console.log('📸 写真ファイル選択:', file.name, file.size, file.type);
+                
+                // ファイルサイズチェック（5MB以下）
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('ファイルサイズが大きすぎます。5MB以下のファイルを選択してください。');
+                    input.value = '';
+                    preview.innerHTML = '';
+                    return;
+                }
+                
+                // 画像ファイルかチェック
+                if (!file.type.startsWith('image/')) {
+                    alert('画像ファイルを選択してください。');
+                    input.value = '';
+                    preview.innerHTML = '';
+                    return;
+                }
+                
+                // プレビュー表示
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `
+                        <div style="text-align: center;">
+                            <img src="${e.target.result}" alt="アップロードされた写真" style="max-width: 300px; max-height: 300px; border-radius: 8px; border: 2px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                            <p style="margin-top: 0.5rem; color: #6b7280; font-size: 0.875rem;">${file.name}</p>
+                            <button type="button" onclick="removePhoto()" style="margin-top: 0.5rem; padding: 0.5rem 1rem; background: #ef4444; color: white; border: none; border-radius: 0.375rem; cursor: pointer; font-size: 0.875rem;">
+                                写真を削除
+                            </button>
+                        </div>
+                    `;
+                    
+                    // ラベルのテキストを変更
+                    if (label) {
+                        label.textContent = '写真を変更';
+                        label.style.background = '#10b981';
+                        label.style.borderColor = '#10b981';
+                    }
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.innerHTML = '';
+                if (label) {
+                    label.textContent = '写真を選択';
+                    label.style.background = '#2563eb';
+                    label.style.borderColor = '#2563eb';
+                }
+            }
+        }
+        
+        // 写真を削除する関数
+        function removePhoto() {
+            const input = document.getElementById('photoUpload');
+            const preview = document.getElementById('photoPreview');
+            const label = document.querySelector('label[for="photoUpload"]');
+            
+            input.value = '';
+            preview.innerHTML = '';
+            
+            if (label) {
+                label.textContent = '写真を選択';
+                label.style.background = '#2563eb';
+                label.style.borderColor = '#2563eb';
+            }
+        }
+        
+        // ドラッグ&ドロップ処理
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const dropZone = document.getElementById('dropZone');
+            dropZone.style.borderColor = '#2563eb';
+            dropZone.style.background = '#eff6ff';
+        }
+        
+        function handleDragLeave(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const dropZone = document.getElementById('dropZone');
+            dropZone.style.borderColor = '#d1d5db';
+            dropZone.style.background = '#f9fafb';
+        }
+        
+        function handleDrop(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const dropZone = document.getElementById('dropZone');
+            dropZone.style.borderColor = '#d1d5db';
+            dropZone.style.background = '#f9fafb';
+            
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                const input = document.getElementById('photoUpload');
+                
+                // FileListを設定
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                input.files = dataTransfer.files;
+                
+                // アップロード処理を実行
+                handlePhotoUpload(input);
+            }
+        }
+    </script>
+</body>
+</html>

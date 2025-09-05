@@ -1,5 +1,4 @@
 import { defineConfig } from "vite"
-import { resolve } from "path"
 
 export default defineConfig({
   root: ".",
@@ -9,7 +8,10 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        main: resolve(__dirname, "index.html")
+        main: "./index.html",
+        payment: "./payment.html",
+        "payment-success": "./payment-success.html",
+        legal: "./legal.html"
       }
     }
   },

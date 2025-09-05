@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>決済完了 - emolink</title>
+    <meta name="description" content="emolink決済完了 - 秘密鍵でCMSにアクセスして想い出ページを作成">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h1>emolink</h1>
+            </div>
+            <div class="nav-menu">
+                <a href="/" class="nav-link">トップページ</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Success Page -->
+    <section class="success-page">
+        <div class="container">
+            <div class="success-icon">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22,4 12,14.01 9,11.01"></polyline>
+                </svg>
+            </div>
+            
+            <h1>決済完了</h1>
+            <p class="success-message">
+                お支払いが完了しました。<br>
+                秘密鍵をメールでお送りいたしますので、受信ボックスをご確認ください。
+            </p>
+            
+            <div class="order-info">
+                <h3>注文情報</h3>
+                <div class="order-details" id="orderDetails">
+                    <!-- 動的に生成 -->
+                </div>
+            </div>
+            
+            <div class="next-steps">
+                <h3>次のステップ</h3>
+                <ol>
+                    <li>
+                        <strong>メール確認</strong><br>
+                        受信ボックス（迷惑メールフォルダも含む）で秘密鍵メールを確認
+                    </li>
+                    <li>
+                        <strong>CMSアクセス</strong><br>
+                        メール内のリンクからCMSにアクセス
+                    </li>
+                    <li>
+                        <strong>想い出ページ作成</strong><br>
+                        写真とメッセージを追加して想い出ページを作成
+                    </li>
+                    <li>
+                        <strong>制作・発送</strong><br>
+                        アクリルスタンドの制作・発送（通常1〜2週間）
+                    </li>
+                </ol>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="/" class="btn btn-secondary">トップページに戻る</a>
+                <a href="/cms" class="btn btn-primary" id="cmsLink" style="display: none;">CMSにアクセス</a>
+            </div>
+            
+            <div class="support-info">
+                <h4>サポート</h4>
+                <p>ご不明な点がございましたら、お気軽にお問い合わせください。</p>
+                <p>
+                    <strong>メール:</strong> support@emolink.com<br>
+                    <strong>電話:</strong> 03-1234-5678（平日 9:00-18:00）
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>emolink</h3>
+                    <p>大切な想い出を永遠に</p>
+                </div>
+                <div class="footer-column">
+                    <h4>サービス</h4>
+                    <ul>
+                        <li><a href="/#experience">体験イメージ</a></li>
+                        <li><a href="/#demo">デモページ</a></li>
+                        <li><a href="/#price">料金</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>サポート</h4>
+                    <ul>
+                        <li><a href="/contact">お問い合わせ</a></li>
+                        <li><a href="/privacy">プライバシーポリシー</a></li>
+                        <li><a href="/terms">利用規約</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 emolink. All rights reserved.</p>
+                <p style="font-size: 12px; color: #6b7280; margin-top: 8px;">v1.1.1</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script type="module" src="js/payment-success.js"></script>
+</body>
+</html>

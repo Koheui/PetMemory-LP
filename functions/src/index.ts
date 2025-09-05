@@ -9,6 +9,9 @@ import { handleLpForm } from "./api/lpForm";
 import { handleLogin, handleVerifyEmail, handleLogout } from "./api/auth";
 import { handleCreatePaymentIntent } from "./api/paymentIntent";
 import { handleStripeWebhook } from "./api/stripeWebhook";
+import { handleCreateCheckoutSession } from "./api/stripeCheckout";
+import { handleGetProductCatalog, handleUpdateProductCatalog } from "./api/productCatalog";
+import { handleCreateInitialData } from "./api/admin";
 
 // Express アプリケーションの作成
 const app = express();
@@ -41,6 +44,14 @@ app.post("/api/gate/lp-form", handleLpForm);
 // Stripe決済エンドポイント
 app.post("/api/create-payment-intent", handleCreatePaymentIntent);
 app.post("/api/stripe-webhook", handleStripeWebhook);
+app.post("/api/create-checkout-session", handleCreateCheckoutSession);
+
+// 商品カタログAPI
+app.get("/api/products/:tenant/:lpId/:productType", handleGetProductCatalog);
+app.post("/api/products/:tenant/:lpId/:productType", handleUpdateProductCatalog);
+
+// 管理API
+app.post("/api/admin/create-initial-data", handleCreateInitialData);
 
 // 認証エンドポイント
 app.post("/api/auth/login", handleLogin);
