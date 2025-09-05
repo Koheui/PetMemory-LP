@@ -23,6 +23,9 @@
     
     <!-- reCAPTCHA v3 -->
     <script src="https://www.google.com/recaptcha/api.js?render=6LeCp7wrAAAAACXaot0OR0ClPJ-jeM7f17OpfkoX"></script>
+    
+    <!-- Stripe.js -->
+    <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
     <!-- Skip to content link for accessibility -->
@@ -35,8 +38,8 @@
                 <h1>emolink</h1>
             </div>
             <div class="nav-menu">
-                <a href="#service" class="nav-link">サービス</a>
-                <a href="#flow" class="nav-link">ご利用方法</a>
+                <a href="#experience" class="nav-link">体験イメージ</a>
+                <a href="#demo" class="nav-link">デモページ</a>
                 <a href="#price" class="nav-link">料金</a>
                 <a href="#order" class="nav-link">お申し込み</a>
                 <button class="btn btn-secondary nav-login" id="loginBtn">ログイン</button>
@@ -54,44 +57,105 @@
                     永遠に残しませんか？
                 </h1>
                 <p class="hero-subtitle">
-                    美しいアクリルスタンドと専用ページで<br>
-                    大切な思い出を形に
+                    美しい想い出のひと時をアクリルスタンドにして<br>
+                    スマートフォンからいつでもアクセス可能に
                 </p>
                 <a href="#order" class="btn btn-primary hero-cta">
                     今すぐ申し込む
                 </a>
             </div>
             <div class="hero-image">
-                <img src="assets/hero-product.png" alt="NFCタグ付きアクリルスタンド" class="hero-product">
+                <div class="hero-carousel">
+                    <div class="carousel-container">
+                        <img src="assets/hero-carousel-01.png" alt="NFCタグ付きアクリルスタンド" class="hero-product carousel-slide active">
+                        <img src="assets/hero-carousel-02.png" alt="アクリルスタンドの使用例" class="hero-product carousel-slide">
+                        <img src="assets/hero-carousel-03.png" alt="NFCタグ技術" class="hero-product carousel-slide">
+                        <img src="assets/hero-carousel-04.png" alt="完成イメージ" class="hero-product carousel-slide">
+                    </div>
+                    <div class="carousel-indicators">
+                        <button class="carousel-indicator active" data-slide="0"></button>
+                        <button class="carousel-indicator" data-slide="1"></button>
+                        <button class="carousel-indicator" data-slide="2"></button>
+                        <button class="carousel-indicator" data-slide="3"></button>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Service Section -->
-    <section class="service" id="service">
+    <!-- Experience Section -->
+    <section class="experience" id="experience">
         <div class="container">
-            <h2 class="section-title">EMOLINKの特徴</h2>
-            <div class="service-grid">
-                <div class="service-card">
-                    <div class="service-icon">
-                        <img src="assets/icon-memory-page.svg" alt="想い出ページ">
+            <h2 class="section-title">体験イメージ</h2>
+            <div class="experience-content">
+                <div class="experience-image">
+                    <img src="assets/hero-product.png" alt="アクリルスタンドの使用例" class="experience-main-image">
+                    <div class="experience-overlay">
+                        <div class="experience-text">
+                            <h3>スマートフォンをかざすだけ</h3>
+                            <p>NFCタグにスマートフォンをかざすと、専用の想い出ページが表示されます。QRコードも同梱しているので、どの端末からでもアクセス可能です。</p>
+                        </div>
                     </div>
-                    <h3>専用想い出ページ</h3>
-                    <p>写真、動画、メッセージを自由に編集できる美しい専用ページを作成。いつでもどこでもアクセス可能です。</p>
                 </div>
-                <div class="service-card">
-                    <div class="service-icon">
-                        <img src="assets/icon-acrylic-stand.svg" alt="アクリルスタンド">
+                <div class="experience-features">
+                    <div class="experience-feature">
+                        <div class="feature-icon">
+                            <img src="assets/icon-memory-page.svg" alt="想い出ページ">
+                        </div>
+                        <h4>美しい想い出ページ</h4>
+                        <p>写真、動画、メッセージを自由に編集できる専用ページ</p>
                     </div>
-                    <h3>高品質アクリルスタンド</h3>
-                    <p>透明度の高いアクリル素材を使用した美しいスタンド。お写真を美しく飾りながら、NFCタグでページにアクセス。</p>
+                    <div class="experience-feature">
+                        <div class="feature-icon">
+                            <img src="assets/icon-acrylic-stand.svg" alt="アクリルスタンド">
+                        </div>
+                        <h4>高品質アクリルスタンド</h4>
+                        <p>透明度の高いアクリル素材で美しく仕上げ</p>
+                    </div>
+                    <div class="experience-feature">
+                        <div class="feature-icon">
+                            <img src="assets/icon-nfc-qr.svg" alt="NFC・QRコード">
+                        </div>
+                        <h4>簡単アクセス</h4>
+                        <p>NFCタグとQRコードで確実なアクセス</p>
+                    </div>
                 </div>
-                <div class="service-card">
-                    <div class="service-icon">
-                        <img src="assets/icon-nfc-qr.svg" alt="NFC・QRコード">
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section class="demo" id="demo">
+        <div class="container">
+            <h2 class="section-title">デモページ</h2>
+            <div class="demo-content">
+                <div class="demo-text">
+                    <h3>実際の想い出ページを体験</h3>
+                    <p>CMSで作成された実際の想い出ページをご覧いただけます。どのようなページが作成できるか、ぜひ体験してみてください。</p>
+                    <a href="https://mem.example.com/p/demo" class="btn btn-secondary" target="_blank" rel="noopener">
+                        デモページを見る
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                        </svg>
+                    </a>
+                </div>
+                <div class="demo-preview">
+                    <div class="demo-frame">
+                        <div class="demo-header">
+                            <div class="demo-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                        <div class="demo-content-preview">
+                            <div class="demo-image-placeholder"></div>
+                            <div class="demo-text-preview">
+                                <h4>大切な想い出</h4>
+                                <p>ここに写真やメッセージが表示されます</p>
+                            </div>
+                        </div>
                     </div>
-                    <h3>NFC・QRコード同梱</h3>
-                    <p>スマートフォンをかざすだけでアクセス可能なNFCタグと、万が一に備えたQRコードを必ず同梱します。</p>
                 </div>
             </div>
         </div>
@@ -141,28 +205,79 @@
     <section class="price" id="price">
         <div class="container">
             <h2 class="section-title">料金プラン</h2>
-            <div class="price-card">
-                <div class="price-header">
-                    <h3>emolinkセット</h3>
-                    <div class="price-amount">
-                        <span class="price-currency">¥</span>
-                        <span class="price-value">4,980</span>
-                        <span class="price-unit">（税込）</span>
+            <div class="price-grid">
+                <div class="price-card">
+                    <div class="price-header">
+                        <h3>6cm サイズ</h3>
+                        <div class="price-amount">
+                            <span class="price-currency">¥</span>
+                            <span class="price-value">4,500</span>
+                            <span class="price-unit">（税込）</span>
+                        </div>
                     </div>
+                    <div class="price-features">
+                        <ul>
+                            <li>専用想い出ページ作成・編集</li>
+                            <li>アクリルスタンド（6cm）</li>
+                            <li>NFCタグ書き込み</li>
+                            <li>QRコード印刷物同梱</li>
+                            <li>全国送料無料</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary price-btn" data-size="6cm" data-price="4500">
+                        6cmサイズを選ぶ
+                    </button>
                 </div>
-                <div class="price-features">
-                    <ul>
-                        <li>専用想い出ページ作成・編集</li>
-                        <li>高品質アクリルスタンド（1個）</li>
-                        <li>NFCタグ書き込み</li>
-                        <li>QRコード印刷物同梱</li>
-                        <li>全国送料無料</li>
-                        <li>永続利用（月額費用なし）</li>
-                    </ul>
+                
+                <div class="price-card price-card-featured">
+                    <div class="price-badge">おすすめ</div>
+                    <div class="price-header">
+                        <h3>10cm サイズ</h3>
+                        <div class="price-amount">
+                            <span class="price-currency">¥</span>
+                            <span class="price-value">6,000</span>
+                            <span class="price-unit">（税込）</span>
+                        </div>
+                    </div>
+                    <div class="price-features">
+                        <ul>
+                            <li>専用想い出ページ作成・編集</li>
+                            <li>アクリルスタンド（10cm）</li>
+                            <li>NFCタグ書き込み</li>
+                            <li>QRコード印刷物同梱</li>
+                            <li>全国送料無料</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary price-btn" data-size="10cm" data-price="6000">
+                        10cmサイズを選ぶ
+                    </button>
                 </div>
-                <div class="price-note">
-                    <p><strong>買い切り価格</strong>で月額費用は一切かかりません</p>
+                
+                <div class="price-card">
+                    <div class="price-header">
+                        <h3>14cm サイズ</h3>
+                        <div class="price-amount">
+                            <span class="price-currency">¥</span>
+                            <span class="price-value">8,000</span>
+                            <span class="price-unit">（税込）</span>
+                        </div>
+                    </div>
+                    <div class="price-features">
+                        <ul>
+                            <li>専用想い出ページ作成・編集</li>
+                            <li>アクリルスタンド（14cm）</li>
+                            <li>NFCタグ書き込み</li>
+                            <li>QRコード印刷物同梱</li>
+                            <li>全国送料無料</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary price-btn" data-size="14cm" data-price="8000">
+                        14cmサイズを選ぶ
+                    </button>
                 </div>
+            </div>
+            <div class="price-note">
+                <p><strong>買い切り価格</strong>で月額費用は一切かかりません</p>
             </div>
         </div>
     </section>
@@ -186,31 +301,42 @@
                         <div class="form-error" id="emailError"></div>
                     </div>
                     
+                    <!-- Stripe決済要素 -->
+                    <div class="form-group">
+                        <label class="form-label">お支払い情報</label>
+                        <div id="card-element" class="stripe-card-element">
+                            <!-- Stripe Elements will create form elements here -->
+                        </div>
+                        <div id="card-errors" class="form-error" role="alert"></div>
+                    </div>
+                    
                     <!-- Hidden fields (v1.1仕様: サーバ側でOriginから解決) -->
                     <!-- 削除: 環境変数から動的に取得 -->
                     
                     <button type="submit" class="btn btn-primary btn-large" id="submitBtn" aria-describedby="submitHelp">
-                        <span class="btn-text">申し込みを送信</span>
-                        <span class="btn-spinner" id="spinner" style="display: none;" aria-hidden="true">送信中...</span>
+                        <span class="btn-text" id="submitText">サイズを選択してください</span>
+                        <span class="btn-spinner" id="spinner" style="display: none;" aria-hidden="true">処理中...</span>
                     </button>
-                    <div id="submitHelp" class="sr-only">フォーム送信ボタン。メールアドレスを入力後、このボタンを押してください。</div>
+                    <div id="submitHelp" class="sr-only">フォーム送信ボタン。メールアドレスとお支払い情報を入力後、このボタンを押してください。</div>
                     
                     <div class="form-error" id="generalError" style="display: none;"></div>
                 </form>
                 
                 <!-- 成功メッセージ（フォームの外に配置） -->
                 <div class="form-success" id="successMessage" style="display: none;">
-                    <h3>送信完了</h3>
-                    <p>メールをお送りしました。受信ボックスをご確認いただき、メール内のリンクから想い出ページの作成を開始してください。</p>
+                    <h3>決済完了</h3>
+                    <p>お支払いが完了しました。秘密鍵をメールでお送りいたしますので、受信ボックスをご確認ください。</p>
+                    <p>メール内の秘密鍵でCMSにログインして、想い出ページの作成を開始してください。</p>
                 </div>
                 
                 <div class="order-notes">
                     <h4>ご注意事項</h4>
                     <ul>
-                        <li>メール送信後、認証リンクの有効期限は72時間です</li>
+                        <li>秘密鍵の有効期限は30日間です</li>
+                        <li>秘密鍵は一度使用すると無効になります</li>
                         <li>迷惑メールフォルダもご確認ください</li>
                         <li>制作期間は通常1〜2週間程度です</li>
-                        <li>お支払いは想い出ページ作成後に案内いたします</li>
+                        <li>お支払いは決済完了と同時に処理されます</li>
                     </ul>
                 </div>
             </div>
@@ -228,8 +354,8 @@
                 <div class="footer-links">
                     <div class="footer-column">
                         <h4>サービス</h4>
-                        <a href="#service">特徴</a>
-                        <a href="#flow">ご利用方法</a>
+                        <a href="#experience">体験イメージ</a>
+                        <a href="#demo">デモページ</a>
                         <a href="#price">料金</a>
                     </div>
                     <div class="footer-column">
@@ -249,5 +375,6 @@
 
     <!-- Scripts -->
     <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/stripe-payment.js"></script>
 </body>
 </html>

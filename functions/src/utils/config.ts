@@ -39,6 +39,11 @@ function getTenantConfigFromEnv(): { [key: string]: TenantConfig[string] } {
   }
 }
 
+// テナント設定を取得（既存関数との互換性）
+export function getTenantConfig(tenant: string): TenantConfig[string] | null {
+  return getDynamicTenantConfig(tenant);
+}
+
 // 動的テナント設定（環境変数から取得）
 export function getDynamicTenantConfig(tenant: string): TenantConfig[string] {
   // デフォルト設定（全てのテナントで共通）

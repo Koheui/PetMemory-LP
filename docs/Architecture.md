@@ -1,6 +1,6 @@
-想い出リンク｜全体設計図 v4.0（統合仕様・LP/アプリ/運用まで）
+想い出リンク｜全体設計図 v2.0（統合仕様・LP/アプリ/運用まで）
 
-目的：LP（BtoC/BtoB）→ 認証（メールリンク）→ CMS編集/公開 → NFC/QR 書込 → 印刷/出荷まで、 プロダクト全体の仕様と運用を 1 枚の設計図に統合。Cursor/Gemini/VSCode など別環境でも迷わない参照元とする。
+目的：LP（BtoC/BtoB）→ 決済（Stripe）→ 秘密鍵認証（メールリンク）→ CMS編集/公開 → NFC/QR 書込 → 印刷/出荷まで、 プロダクト全体の仕様と運用を 1 枚の設計図に統合。Cursor/Gemini/VSCode など別環境でも迷わない参照元とする。
 
 0. スコープ & ゴール
 
@@ -10,26 +10,28 @@ BtoB テナント：赤ちゃん筆/ペット葬 等の提携LP経由で同じCM
 
 共通要件：
 
-秘密鍵の事前配布はしない。ゲート通過（LP/Stripe/店舗）→ メールリンクでクレーム。
+秘密鍵の事前配布はしない。決済完了（Stripe）→ 秘密鍵生成 → メールリンクでクレーム。
 
 買い切り、ランニング極小化：静的配信＋強キャッシュ、画像/動画の最適化配信。
 
 誤紐付けゼロ：NFC書込は UI 確認→書込→再読込検証→ログ必須。QR＋短縮URLを全件同梱。
 
-マルチテナント分離：tenant / lpId を全主要データに付与、Rules/Claims/CORSで多層ガード。
+マルチテナント分離：tenant / lpId / productType を全主要データに付与、Rules/Claims/CORSで多層ガード。
+
+純粋CMS：コンテンツ管理のみに特化、制作機能は各事業者のシステムに委譲。
 
 1. システム一覧（コア5 + 拡張4）
 コア（必須）
 
-自社LP（BtoC）：静的HTML。フォーム→ Functions(/api/gate/lp-form)。
+自社LP（BtoC）：静的HTML。Stripe決済→ Functions(/api/create-payment-intent)。
 
-テナントLP群（BtoB）：各社ドメインのLP。Partner Form→ 同API（CORS・reCAPTCHA）。
+テナントLP群（BtoB）：各社ドメインのLP。Stripe決済→ 同API（CORS・reCAPTCHA）。
 
-アプリ（app.example.com）：サインイン/クレーム/編集/公開/管理UI。
+アプリ（app.example.com）：秘密鍵認証/クレーム/編集/公開/管理UI。
 
 公開サイト（mem.example.com）：/p/{pageId} 静的配信（deliver/**）。
 
-バックエンド（Functions/Firestore/Storage）：ゲート受付、メールリンク発行、公開ビルド、監査、Webhook。
+バックエンド（Functions/Firestore/Storage）：決済処理、秘密鍵生成、メールリンク発行、公開ビルド、監査、Webhook。
 
 拡張（必要に応じて）
 
@@ -69,8 +71,13 @@ users/{uid}
   email, displayName?, createdAt, updatedAt
 
 
+secretKeys/{secretKey}
+  email, tenant, lpId, productType, status: "active"|"used"|"expired",
+  createdAt, expiresAt, usedAt?, orderId?
+
+
 claimRequests/{requestId}
-  email, tenant, lpId, productType, source: "lp-form"|"storefront"|"stripe",
+  email, tenant, lpId, productType, secretKey, source: "stripe-webhook",
   status: "pending"|"sent"|"claimed"|"expired",
   sentAt?, claimedAt?, emailHash
 
@@ -125,17 +132,19 @@ deliver/publicPages/{pageId}/cover.jpg
 
 3.4 テナント分離ルール（要旨）
 
-すべての主要ドキュメントに tenant（必須）と lpId を保持
+すべての主要ドキュメントに tenant（必須）、lpId、productType を保持
 
 Functions 側で ホワイトリスト検証（ALLOWED_TENANTS[tenant].includes(lpId)）
 
-/claim で 4点突合：auth.email === claimRequests.email かつ tenant/lpId 一致 かつ rid 有効
+/claim で 5点突合：auth.email === claimRequests.email かつ tenant/lpId/productType 一致 かつ secretKey 有効
 
 Rules + Custom Claims（role, adminTenant）で二重ガード
 
-4. 認証／クレーム（メールリンク）
+4. 認証／クレーム（秘密鍵 + メールリンク）
 
-**メールリンク（パスワードレス）**を“秘密鍵”として使用。
+**Stripe決済完了 → 秘密鍵生成 → メールリンク送信**の流れで認証。
+
+秘密鍵は16文字の英数字（例：A1B2C3D4E5F6G7H8）、30日間有効、1回使用。
 
 初回サインイン後は browserLocalPersistence で自動復元。別端末は「リンク再送」導線。
 
@@ -146,23 +155,21 @@ Rules + Custom Claims（role, adminTenant）で二重ガード
 5. 主要フロー
 5.1 BtoC 自社LP
 
-LPフォーム送信（email, tenant=petmem, lpId=direct, productType=acrylic, recaptchaToken）
+LP決済（Stripe）→ 決済完了 → Functions：Stripe Webhook → 秘密鍵生成 → claimRequests 作成 → Authメールリンク送信（30日）
 
-Functions：reCAPTCHA→claimRequests 生成→Authメールリンク送信（72h）
+ユーザー：メール→/claim?rid=...&tenant=...&lpId=...&secretKey=...
 
-ユーザー：メール→/claim?rid=...&tenant=...&lpId=...
-
-アプリ：signInWithEmailLink→ 4点突合 OK → memories 作成、publicPageId 付与
+アプリ：signInWithEmailLink→ 5点突合 OK → memories 作成、publicPageId 付与
 
 編集→「公開」→ Functions が deliver/** を生成、publicPages.publish 更新
 
-（任意）決済/住所入力→ orders 作成、フルフィルメントへ
+（任意）制作依頼→ orders 作成、各事業者の制作システムへ
 
 5.2 BtoB テナントLP
 
-Partner Form から 最小情報のみ送信：email, tenant, lpId, productType, orderRef, fulfillmentMode, (vendorDirectなら shipping)
+Partner LP決済（Stripe）→ 決済完了 → Functions：Stripe Webhook → 秘密鍵生成 → claimRequests 作成 → Authメールリンク送信
 
-同じ /api/gate/lp-form 系のゲートで受け、以降は BtoC と同一フロー
+同じ /api/stripe-webhook 系のゲートで受け、以降は BtoC と同一フロー
 
 PII最小化：tenantDirect では住所を扱わない。vendorDirect でも短期保持。
 
@@ -181,11 +188,13 @@ publicPages 更新で qr.png 自動生成、A4テンプレPDF（任意）
 紙に QR + 短縮URL を印刷し必ず同封（NFC不調時の保険）
 
 6. Functions API（I/Oサマリ）
-6.1 ゲート／クレーム系
+6.1 決済／クレーム系
 
-POST /api/gate/lp-form：LP/Partner からの申込を受理 → claimRequests 作成 → Authメールリンク送信
+POST /api/create-payment-intent：Stripe Payment Intent作成 → 決済処理
 
-GET /claim（アプリ側実装）：rid 取得→ 4点突合 → memories 発行
+POST /api/stripe-webhook：Stripe決済完了 → 秘密鍵生成 → claimRequests 作成 → Authメールリンク送信
+
+GET /claim（アプリ側実装）：rid 取得→ 5点突合 → memories 発行
 
 POST /api/claim/change-email（任意）：宛先変更→所有確認→再送
 
@@ -209,7 +218,7 @@ POST /api/admin/users/set-claims：superAdmin 専用 昇格API（監査）
 
 6.4 Webhook/Batch
 
-/hooks/stripe：決済成功→ orders.status=paid
+/api/stripe-webhook：決済成功→ 秘密鍵生成 → orders.status=paid
 
 Sheets 同期（CRON）：claimRequests/orders をテナント別タブで出力（PIIは emailHash）
 
@@ -241,7 +250,7 @@ PII最小化：住所は vendorDirect の短期保持のみ。ログは emailHas
 
 Auth：Emailリンク有効／承認済みドメインに app.example.com
 
-環境変数：RECAPTCHA_SECRET, APP_CLAIM_CONTINUE_URL, CORS_ALLOWED_ORIGINS, （任意）STRIPE_*, SHEETS_*
+環境変数：STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, RECAPTCHA_SECRET, APP_CLAIM_CONTINUE_URL, CORS_ALLOWED_ORIGINS, （任意）SHEETS_*
 
 初回昇格：ワンタイム bootstrapAdmin 関数→superAdmin 付与→無効化
 
@@ -345,17 +354,19 @@ pending → linkSent → claimed → (paid) → (approved) → printReady → nf
 
 共通：FIREBASE_WEB_API_KEY, APP_CLAIM_CONTINUE_URL, RECAPTCHA_SECRET, CORS_ALLOWED_ORIGINS
 
-任意：STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, SHEETS_SERVICE_ACCOUNT
+必須：STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET
 
-付録C：実装メモ（/claim 4点突合）
+任意：SHEETS_SERVICE_ACCOUNT
+
+付録C：実装メモ（/claim 5点突合）
 
 isSignInWithEmailLink でリンク判定→ signInWithEmailLink(email, window.location.href)
 
-URLの rid, tenant, lpId 取得
+URLの rid, tenant, lpId, secretKey 取得
 
 Firestore claimRequests[rid] を取得
 
-auth.email === doc.email && tenant/lpId 一致 && status in {sent} → OK
+auth.email === doc.email && tenant/lpId/productType 一致 && secretKey 有効 && status in {sent} → OK
 
 memories / publicPages を作成、orders とひも付け、status=claimed
 

@@ -599,6 +599,78 @@ function setupEventListeners() {
   }, 10));
 }
 
+// ================================
+// カルーセル機能
+// ================================
+
+let currentSlide = 0;
+let carouselInterval;
+
+/**
+ * カルーセル初期化
+ */
+function initCarousel() {
+  const slides = document.querySelectorAll('.carousel-slide');
+  const indicators = document.querySelectorAll('.carousel-indicator');
+  
+  if (slides.length === 0) return;
+  
+  // インジケータークリックイベント
+  indicators.forEach((indicator, index) => {
+    indicator.addEventListener('click', () => {
+      goToSlide(index);
+    });
+  });
+  
+  // 自動再生開始
+  startCarousel();
+}
+
+/**
+ * 指定したスライドに移動
+ * @param {number} slideIndex - スライドインデックス
+ */
+function goToSlide(slideIndex) {
+  const slides = document.querySelectorAll('.carousel-slide');
+  const indicators = document.querySelectorAll('.carousel-indicator');
+  
+  if (slideIndex < 0 || slideIndex >= slides.length) return;
+  
+  // 現在のスライドを非アクティブに
+  slides[currentSlide].classList.remove('active');
+  indicators[currentSlide].classList.remove('active');
+  
+  // 新しいスライドをアクティブに
+  currentSlide = slideIndex;
+  slides[currentSlide].classList.add('active');
+  indicators[currentSlide].classList.add('active');
+}
+
+/**
+ * 次のスライドに移動
+ */
+function nextSlide() {
+  const slides = document.querySelectorAll('.carousel-slide');
+  const nextIndex = (currentSlide + 1) % slides.length;
+  goToSlide(nextIndex);
+}
+
+/**
+ * 自動再生開始
+ */
+function startCarousel() {
+  carouselInterval = setInterval(nextSlide, 4000); // 4秒間隔
+}
+
+/**
+ * 自動再生停止
+ */
+function stopCarousel() {
+  if (carouselInterval) {
+    clearInterval(carouselInterval);
+  }
+}
+
 /**
  * DOMContentLoaded時の初期化
  */
@@ -618,6 +690,9 @@ function initialize() {
   
   // スクロールアニメーション設定
   setupScrollAnimations();
+  
+  // カルーセル初期化
+  initCarousel();
   
   // reCAPTCHA読み込み確認
   if (typeof grecaptcha === 'undefined') {

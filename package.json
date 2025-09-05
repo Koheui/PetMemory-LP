@@ -9,7 +9,8 @@
     "build:lp": "vite build --config vite.config.js",
     "build:lp-petmem": "vite build --config vite.petmem.config.js",
     "build:functions": "cd functions && npm run build",
-    "build:app-hosting": "vite build --config vite.config.js",    "dev": "vite",
+    "build:app-hosting": "vite build --config vite.config.js",
+    "dev": "vite",
     "dev:petmem": "vite --config vite.petmem.config.js",
     "serve": "firebase serve",
     "deploy": "firebase deploy",
@@ -17,7 +18,12 @@
     "deploy:lp-petmem": "firebase deploy --only hosting:lp-petmem-com",
     "start": "firebase serve --only hosting"
   },
-  "keywords": ["pet", "memory", "nfc", "landing-page"],
+  "keywords": [
+    "pet",
+    "memory",
+    "nfc",
+    "landing-page"
+  ],
   "author": "PetMemory Team",
   "license": "MIT",
   "devDependencies": {
@@ -25,6 +31,8 @@
     "vite": "^5.0.0"
   },
   "dependencies": {
-    "firebase": "^10.1.0"
+    "@stripe/stripe-js": "^7.9.0",
+    "firebase": "^10.1.0",
+    "stripe": "^18.5.0"
   }
 }

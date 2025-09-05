@@ -255,6 +255,7 @@ ul {
 
 .hero-text {
   color: var(--text-white);
+  padding-left: 20%; /* 左から20%内側に寄せる */
 }
 
 .hero-title {
@@ -287,9 +288,59 @@ ul {
   align-items: center;
 }
 
-.hero-product {
+.hero-carousel {
+  position: relative;
   max-width: 400px;
+  width: 100%;
+}
+
+.carousel-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+}
+
+.carousel-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
   filter: drop-shadow(var(--shadow-xl));
+}
+
+.carousel-slide.active {
+  opacity: 1;
+}
+
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
+}
+
+.carousel-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--text-light);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.carousel-indicator.active {
+  background-color: var(--primary-color);
+}
+
+.carousel-indicator:hover {
+  background-color: var(--primary-light);
 }
 
 /* ================================
@@ -669,6 +720,10 @@ ul {
     gap: var(--spacing-2xl);
   }
   
+  .hero-text {
+    padding-left: 0; /* タブレットでは中央寄せ */
+  }
+  
   .hero-title {
     font-size: var(--font-size-3xl);
   }
@@ -713,6 +768,10 @@ ul {
   
   .hero-title {
     font-size: var(--font-size-2xl);
+  }
+  
+  .hero-text {
+    padding-left: 0; /* モバイルでは中央寄せ */
   }
   
   .hero-subtitle {
@@ -957,6 +1016,320 @@ ul {
 .nav-link:focus-visible {
   outline: 2px solid var(--primary-color);
   outline-offset: 2px;
+}
+
+/* ================================
+   Experience Section
+   ================================ */
+.experience {
+  padding: var(--spacing-3xl) 0;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+.experience-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-3xl);
+  align-items: center;
+}
+
+.experience-image {
+  position: relative;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+}
+
+.experience-main-image {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+}
+
+.experience-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+  color: var(--text-white);
+  padding: var(--spacing-xl);
+}
+
+.experience-text h3 {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  margin-bottom: var(--spacing-sm);
+}
+
+.experience-text p {
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+}
+
+.experience-features {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.experience-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.feature-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  background: var(--primary-color);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feature-icon img {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1);
+}
+
+.experience-feature h4 {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  margin-bottom: var(--spacing-xs);
+  color: var(--text-primary);
+}
+
+.experience-feature p {
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ================================
+   Demo Section
+   ================================ */
+.demo {
+  padding: var(--spacing-3xl) 0;
+  background: var(--bg-primary);
+}
+
+.demo-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-3xl);
+  align-items: center;
+}
+
+.demo-text h3 {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  margin-bottom: var(--spacing-lg);
+  color: var(--text-primary);
+}
+
+.demo-text p {
+  font-size: var(--font-size-lg);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--spacing-xl);
+}
+
+.demo-text .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.demo-preview {
+  display: flex;
+  justify-content: center;
+}
+
+.demo-frame {
+  width: 300px;
+  height: 400px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+}
+
+.demo-header {
+  background: #e5e7eb;
+  padding: var(--spacing-md);
+  display: flex;
+  align-items: center;
+}
+
+.demo-dots {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.demo-dots span {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #9ca3af;
+}
+
+.demo-dots span:first-child {
+  background: #ef4444;
+}
+
+.demo-dots span:nth-child(2) {
+  background: #f59e0b;
+}
+
+.demo-dots span:last-child {
+  background: #10b981;
+}
+
+.demo-content-preview {
+  padding: var(--spacing-xl);
+  height: calc(100% - 60px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.demo-image-placeholder {
+  width: 100%;
+  height: 150px;
+  background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+  border-radius: var(--radius-md);
+}
+
+.demo-text-preview h4 {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.demo-text-preview p {
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ================================
+   Price Grid
+   ================================ */
+.price-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+}
+
+.price-card {
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-lg);
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.price-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+.price-card-featured {
+  border-color: var(--primary-color);
+  transform: scale(1.05);
+}
+
+.price-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--primary-color);
+  color: var(--text-white);
+  padding: var(--spacing-xs) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.price-btn {
+  width: 100%;
+  margin-top: var(--spacing-lg);
+}
+
+.price-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ================================
+   Stripe Elements Styles
+   ================================ */
+.stripe-card-element {
+  padding: 12px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  background-color: var(--bg-primary);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+}
+
+.stripe-card-element:focus-within {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.stripe-card-element.StripeElement--invalid {
+  border-color: #ef4444;
+}
+
+.stripe-card-element.StripeElement--complete {
+  border-color: #10b981;
+}
+
+/* Stripe Elements の内部スタイル */
+.StripeElement {
+  width: 100%;
+}
+
+/* エラーメッセージのスタイル */
+#card-errors {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #ef4444;
+}
+
+/* 決済ボタンのスタイル */
+.btn-payment {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-payment:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.btn-payment:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 /* High contrast mode support */

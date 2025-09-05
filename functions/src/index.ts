@@ -7,6 +7,8 @@ import express from "express";
 import cors from "cors";
 import { handleLpForm } from "./api/lpForm";
 import { handleLogin, handleVerifyEmail, handleLogout } from "./api/auth";
+import { handleCreatePaymentIntent } from "./api/paymentIntent";
+import { handleStripeWebhook } from "./api/stripeWebhook";
 
 // Express アプリケーションの作成
 const app = express();
@@ -35,6 +37,10 @@ app.get("/health", (req, res) => {
 
 // LP フォームエンドポイント
 app.post("/api/gate/lp-form", handleLpForm);
+
+// Stripe決済エンドポイント
+app.post("/api/create-payment-intent", handleCreatePaymentIntent);
+app.post("/api/stripe-webhook", handleStripeWebhook);
 
 // 認証エンドポイント
 app.post("/api/auth/login", handleLogin);

@@ -10,3 +10,6 @@ if (!admin.apps.length) {
 }
 
 export { admin };
+
+// Firestore インスタンス
+export const db = admin.firestore();

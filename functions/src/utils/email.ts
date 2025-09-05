@@ -387,3 +387,184 @@ export async function sendConfirmationEmail(
     // 確認メールの失敗は致命的ではないので、エラーを投げない
   }
 }
+
+/**
+ * 秘密鍵メール送信（Secret Key v1.0仕様）
+ */
+export async function sendSecretKeyEmail(
+  email: string,
+  secretKey: string,
+  labels: {
+    tenantId: string;
+    lpId: string;
+    productType: string;
+  }
+): Promise<void> {
+  try {
+    
+    // プロダクトタイプ名のマッピング
+    const productTypeNames = {
+      'acrylic': 'NFCタグ付きアクリルスタンド',
+      'digital': 'デジタル想い出ページ',
+      'premium': 'プレミアム想い出サービス',
+      'standard': 'スタンダード想い出サービス'
+    };
+    
+    // テナント名のマッピング
+    const tenantNames = {
+      'petmem': 'PetMemory',
+      'futurestudio': 'Future Studio',
+      'newcompany': 'New Company'
+    };
+    
+    const brandName = (tenantNames as any)[labels.tenantId] || labels.tenantId;
+    const productName = (productTypeNames as any)[labels.productType] || labels.productType;
+    
+    const subject = `${brandName} - 秘密鍵のお知らせ`;
+    
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html lang="ja">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>${subject}</title>
+        <style>
+          body {
+            font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8fafc;
+          }
+          .container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          }
+          .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e5e7eb;
+          }
+          .header h1 {
+            color: #2563eb;
+            margin: 0;
+            font-size: 24px;
+          }
+          .secret-key-box {
+            background: #f8fafc;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #1f2937;
+          }
+          .order-details {
+            background: #f0f8ff;
+            border-left: 4px solid #2563eb;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+          }
+          .order-details h3 {
+            margin-top: 0;
+            color: #1e40af;
+          }
+          .cta-button {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            margin: 20px 0;
+          }
+          .cta-button:hover {
+            background: #1d4ed8;
+          }
+          .warning {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #92400e;
+          }
+          .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 14px;
+            color: #6b7280;
+            text-align: center;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>${brandName}</h1>
+            <p>決済が完了しました</p>
+          </div>
+          
+          <p>お支払いありがとうございます。以下の秘密鍵でCMSにログインしてください。</p>
+          
+          <div class="secret-key-box">
+            ${secretKey}
+          </div>
+          
+          <div class="order-details">
+            <h3>注文詳細</h3>
+            <p><strong>プロダクト:</strong> ${productName}</p>
+            <p><strong>テナント:</strong> ${brandName}</p>
+            <p><strong>LP:</strong> ${labels.lpId}</p>
+          </div>
+          
+          <div style="text-align: center;">
+            <a href="https://emolink.net" class="cta-button">CMSにアクセス</a>
+          </div>
+          
+          <div class="warning">
+            <strong>⚠️ 重要な注意事項</strong>
+            <ul style="margin: 10px 0;">
+              <li>この秘密鍵は30日間有効です</li>
+              <li>秘密鍵は一度使用すると無効になります</li>
+              <li>秘密鍵を他人と共有しないでください</li>
+            </ul>
+          </div>
+          
+          <div class="footer">
+            <p>このメールは自動送信されています。</p>
+            <p>ご不明な点がございましたら、お気軽にお問い合わせください。</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+    
+    await sendEmailWithGmail(email, subject, htmlContent);
+    
+    console.log('📧 秘密鍵メール送信完了:', {
+      email: email,
+      secretKey: secretKey.substring(0, 8) + '...',
+      tenant: labels.tenantId,
+      lpId: labels.lpId,
+      productType: labels.productType
+    });
+    
+  } catch (error) {
+    console.error("Failed to send secret key email:", error);
+    throw new Error("秘密鍵メール送信に失敗しました");
+  }
+}

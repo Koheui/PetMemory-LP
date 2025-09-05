@@ -99,8 +99,23 @@ service cloud.firestore {
       allow write: if false; // Functions のみが書き込み可能
     }
 
-    // ===== Rate Limits =====
-    match /rateLimits/{limitId} {
+    // ===== Secret Keys =====
+    // 秘密鍵はクライアントからの書き込み禁止（Functions のみ）
+    match /secretKeys/{secretKey} {
+      allow read: if isSuperAdmin() || 
+                     (isAuthenticated() && 
+                      request.auth.token.email == resource.data.email);
+      allow write: if false; // Functions のみが書き込み可能
+    }
+
+    // ===== Secret Key Logs =====
+    match /secretKeyLogs/{logId} {
+      allow read: if isSuperAdmin();
+      allow write: if false; // Functions のみが書き込み可能
+    }
+
+    // ===== Payment Failures =====
+    match /paymentFailures/{failureId} {
       allow read: if isSuperAdmin();
       allow write: if false; // Functions のみが書き込み可能
     }
